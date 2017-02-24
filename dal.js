@@ -57,7 +57,16 @@ function getUniqueForms(cb) {
 const returnDoc = row => row.doc
 
 
-getUniqueForms(function(err, forms) {
-  if (err) return console.log(err)
-  console.log(forms)
-})
+// getUniqueForms(function(err, forms) {
+//   if (err) return console.log(err)
+//   console.log(forms)
+// })
+
+const dal = {getUniqueForms: getUniqueForms,
+listMedsByLabel: listMedsByLabel,
+getUniqueIngredients: getUniqueIngredients,
+listMedsByIngredient: listMedsByIngredient,
+listMedsByForm: listMedsByForm,
+getMed: getMed}
+
+module.exports = dal
