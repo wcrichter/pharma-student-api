@@ -26,9 +26,9 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### view medication list
 
-- `GET /medications` - returns a collection of medications default sorted by label -  dal's listMedsByLabel()
-- `GET /medications?filter=ingredient:aspirin` - filters a collection of medications by specified ingredient  `dal.listMedsByIngredient(ingredient, cb)`
-- `GET /medications?filter=form:tablet`  - filters a collection of medications by form (tablet, syrup, patch) `dal.listMedsByForm(form, cb)`
+- (done)`GET /medications` - returns a collection of medications default sorted by label -  dal's listMedsByLabel()
+- (done)`GET /medications?filter=ingredient:aspirin` - filters a collection of medications by specified ingredient  `dal.listMedsByIngredient(ingredient, cb)`
+- (done)`GET /medications?filter=form:tablet`  - filters a collection of medications by form (tablet, syrup, patch) `dal.listMedsByForm(form, cb)`
 
 ### view medication ingredient list
 

@@ -21,13 +21,19 @@ app.get('/medications', function(req, res, next) {
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(meds)
         })
+    } else if (req.query.filter && split(':', req.query.filter)[0] === 'form') {
+        const result = split(':', req.query.filter)
+        listMedsByForm(result[1], function(err, meds) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(meds)
+        })
     } else if (!req.query.filter) {
         listMedsByLabel(function(err, meds) {
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(meds)
         })
     } else {
-      res.status(200).send([])
+        res.status(200).send([])
     }
 })
 
