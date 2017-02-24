@@ -32,7 +32,7 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### view medication ingredient list
 
-- `GET /medications/ingredients` - returns a unique list of ingredients for all medications.   call dal's `getUniqueIngredients()`.
+- (done) `GET /medications/ingredients` - returns a unique list of ingredients for all medications.   call dal's `getUniqueIngredients()`.
 
 ### view medication forms list
 

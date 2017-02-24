@@ -37,7 +37,12 @@ app.get('/medications', function(req, res, next) {
     }
 })
 
-
+app.get('/medications/ingredients', function (req, res, next) {
+  getUniqueIngredients(function (err, ingredients) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(ingredients)
+  })
+})
 
 
 
