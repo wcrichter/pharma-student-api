@@ -36,7 +36,7 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### view medication forms list
 
-- `GET /medications/forms` - returns a unique list of forms for all medications - call to dal's getUniqueForms()
+- (done) `GET /medications/forms` - returns a unique list of forms for all medications - call to dal's getUniqueForms()
 
 ### view single medication detail
 

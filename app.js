@@ -44,6 +44,12 @@ app.get('/medications/ingredients', function (req, res, next) {
   })
 })
 
+app.get('/medications/forms', function (req, res, next) {
+  getUniqueForms(function (err, forms) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(forms)
+  })
+})
 
 
 
