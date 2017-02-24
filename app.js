@@ -17,3 +17,20 @@ app.get('/medications', function(req, res, next) {
         res.status(200).send(meds)
     })
 })
+
+
+
+
+
+
+
+///////////// error handler /////////////////////////////
+app.use(function(err, req, res, next) {
+  console.log(req.method, " ", req.path, "error:  ", err)
+  res.status(err.status || 500)
+  res.send(err)
+})
+
+app.listen(port, function() {
+  console.log("I'm listening on port ", port)
+})
