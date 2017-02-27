@@ -5,76 +5,107 @@ const couch_dbname = "pharmacy-new" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
-    uniq
+    uniq,
+    omit
 } = require('ramda')
 
 
-function getMed(medId, cb) {
+function getMed(medId, cb1) {
     // go to couch and get the med using db.get()
     // return the document back to the caller of the getMed().
     //   The caller will pass in a callback (cb).
     db.get(medId, function(err, doc) {
-        if (err) return cb(err)
-        cb(null, doc)
+        if (err) return cb1(err)
+        cb1(null, doc)
     })
 }
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
 
-function listMedsByLabel(cb) {
+function listMedsByLabel(cb2) {
     db.query('medsByLabel', {
         include_docs: true
     }, function(err, res) {
-        if (err) return cb(err)
-        cb(null, map(returnDoc, res.rows))
+        if (err) return cb2(err)
+        cb2(null, map(returnDoc, res.rows))
     })
 }
 
 // listMedsByIngredient() - sort by ingredient - call pouchdb's api:  db.query('medsByIngredient', {options}, cb)
-function listMedsByIngredient(ingredient, cb) {
+function listMedsByIngredient(ingredient, cb3) {
     db.query('medsByIngredient', {
         include_docs: true,
         keys: [ingredient]
     }, function(err, res) {
-        if (err) return cb(err)
-        cb(null, map(returnDoc, res.rows))
+        if (err) return cb3(err)
+        cb3(null, map(returnDoc, res.rows))
     })
 }
 
-function getUniqueIngredients(cb) {
+function getUniqueIngredients(cb4) {
     db.query('medsByIngredient', null, function(err, res) {
-        if (err) return cb(err)
-        cb(null, uniq(map(row => row.key, res.rows)))
+        if (err) return cb4(err)
+        cb4(null, uniq(map(row => row.key, res.rows)))
     })
 }
 
-function listMedsByForm(form, cb) {
+function listMedsByForm(form, cb5) {
     db.query('medsByForm', {
         include_docs: true,
         keys: [form]
     }, function(err, res) {
-        if (err) return cb(err)
-        cb(null, map(returnDoc, res.rows))
+        if (err) return cb5(err)
+        cb5(null, map(returnDoc, res.rows))
     })
 }
 
-function getUniqueForms(cb) {
+
+function getUniqueForms(cb6) {
     db.query('medsByForm', null, function(err, res) {
-        if (err) return cb(err)
-        cb(null, uniq(map(row => row.key, res.rows)))
+        if (err) return cb6(err)
+        cb6(null, uniq(map(row => row.key, res.rows)))
     })
 }
 
 const returnDoc = row => row.doc
 
-function addPatient(patient, cb) {
+
+////////PATIENTS////////
+
+function addPatient(patient, cb7) {
 
     patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
     db.put(patient, function(err, res) {
-        if (err) return cb(err)
-        cb(null, res)
+        if (err) return cb7(err)
+        cb7(null, res)
     })
 }
+
+
+function getPatients(cb8) {
+    db.allDocs({
+        include_docs: true,
+        start_key: "patient_",
+        end_key: "patient_\uffff"
+    }, function(err, res) {
+        if (err) return cb8(err)
+        cb8(null, (map(obj => omit("type", obj.doc), res.rows)))
+    })
+}
+
+
+function listPatientsByLastName(lastName, cb9) {
+    db.query('patientsByLastName', {
+        include_docs: true,
+        keys: [lastName]
+    }, function(err, res) {
+        if (err) return cb9(err)
+        cb9(null, map(returnDoc, res.rows))
+    })
+}
+
+
+
 
 
 // getUniqueForms(function(err, forms) {
@@ -89,7 +120,9 @@ const dal = {
     listMedsByIngredient: listMedsByIngredient,
     listMedsByForm: listMedsByForm,
     getMed: getMed,
-    addPatient: addPatient
+    addPatient: addPatient,
+    getPatients: getPatients,
+    listPatientsByLastName: listPatientsByLastName
 }
 
 module.exports = dal

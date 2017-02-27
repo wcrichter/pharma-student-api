@@ -7,10 +7,13 @@ const {
     listMedsByIngredient,
     listMedsByForm,
     getMed,
-    addPatient
+    addPatient,
+    getPatients,
+    listPatientsByLastName
 } = require('./dal.js')
 const {
-    split
+    split,
+    omit
 } = require('ramda')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8080
@@ -44,6 +47,8 @@ app.get('/medications', function(req, res, next) {
     }
 })
 
+
+
 app.get('/medications/ingredients', function (req, res, next) {
   getUniqueIngredients(function (err, ingredients) {
     if (err) return next(new HTTPError(err.status, err.message, err))
@@ -58,12 +63,41 @@ app.get('/medications/forms', function (req, res, next) {
   })
 })
 
+//////PATIENTS//////
+
+//Post/Add a patient
 app.post('/patients', function (req, res, next) {
   console.log(req.body)
   addPatient(req.body, function (err, dalResponse) {
     if (err) return next(new HTTPError(err.status, err.message, err))
     res.send(dalResponse)
   })
+})
+
+//Get patient
+/*
+app.get('/patients', function (req, res, next) {
+  getPatients(function (err, resp) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.send(resp)
+  })
+})
+*/
+
+
+app.get('/patients', function(req, res, next) {
+  if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
+    const result = split(':', req.query.filter)
+    listPatientsByLastName(result[1], function(err, patient) {
+      if (err) return next(new HTTPError(err.status, err.message, err))
+      res.status(200).send(patient)
+    })
+  } else if (!req.query.filter) {
+      getPatients(function(err, patients) {
+          if (err) return next(new HTTPError(err.status, err.message, err))
+          res.status(200).send(patients)
+      })
+  } else {return res.status(200).send([])}
 })
 
 

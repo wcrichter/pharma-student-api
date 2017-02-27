@@ -24,7 +24,7 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### User Story 4 - Manage Patients (CHANGE)
 
-As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add, read, edit, delete.:
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add (done), read (done), edit, delete.:
 
 - `id`: "patient <last> <first> <last4> <patientNumber>"
 - type: "patient"
@@ -62,7 +62,7 @@ As an medical assistant or RN within the doctor's office, I need the ability to 
   - 4) Call the endpoint to add (POST) people into the database
   - 5) Create endpoints to support read (GET), update (PUT) and delete (DELETE).
 
-## User Story 5 - Search Patients By Last Name
+## User Story 5 - Search Patients By Last Name (done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.
 
