@@ -4,7 +4,7 @@ const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredi
         listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
         addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
         updatePatient, deletePatient, getPatient} = require('./dal.js')
-const {split, omit} = require('ramda')
+const { split } = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
