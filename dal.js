@@ -121,6 +121,24 @@ function getUniqueConditions(cb12) {
     })
 }
 
+function updatePatient (patient, cb) {
+  patient.type = "patient"
+  db.put(patient, function (err, res) {
+    if (err) return cb(err)
+    cb(null, res)
+  })
+}
+
+function deletePatient (id, cb) {
+  db.get(id, function (err, doc) {
+    if (err) return cb(err)
+    db.remove(doc, function (err, removedDoc) {
+    if (err) return cb(err)
+    cb(null, removedDoc)
+  })
+})
+}
+
 
 
 // getUniqueForms(function(err, forms) {
@@ -139,7 +157,9 @@ const dal = {
     getPatients: getPatients,
     listPatientsByLastName: listPatientsByLastName,
     getUniqueConditions: getUniqueConditions,
-    listPatientsByCondition: listPatientsByCondition
+    listPatientsByCondition: listPatientsByCondition,
+    updatePatient: updatePatient,
+    deletePatient: deletePatient
 }
 
 module.exports = dal
