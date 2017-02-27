@@ -110,27 +110,43 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
 
 ### Database
 
-  - 1) Model pharmacy record JSON)
+  - 1) (Done) Model pharmacy record (JSON)
 
 ### DAL
 
-  - create - a function to add a pharmacy:  `addPharmacy(pharmacy, cb)`
-  - read
-  - update
-  - delete
-  - list
+  - (Done) create - a function to add a pharmacy:  `addPharmacy(pharmacy, cb)`
+    - create custom id; `pharmacy_walgreens_king_street_1005`
+  - (Done) read                                     
+  - (Done) update
+  - (Suzanne) delete    `deletePharmacy`    'pharmacies/:id', cb
+  - (Chris) list        `listPharmacies`    'pharmacies'
 
 ### API
 
- -
+ - (Done) create endpoint to call dal addPharmacy '/pharmacies'
+ - (Done) read endpoint to call dal...              '/pharmacies/:id'  <= <pharmacy id>
+ - (Done) update endpoint to call dal...          '/pharmacies/:id'  <= <pharmacy id>
+ - (Suzanne) delete endpoint to call dal...                    '/pharmacies/:id'  <= <pharmacy id>
+ - (Chris) list endpoint to call dal...                      '/pharmacies?'
 
 ## User Story 8 - Search Pharmacies
 
   - As a medical assistant, I need the ability to search for pharmacies by chain name or store name when prescribing medications.  
 
+### Database
+
+- search by chainName can utilize allDocs and primary id
+- (Stephen) create query to search by storeName 
+
 ### DAL
 
-- search
+- search listPharmaciesByChainName(chainName, cb)
+- search listPharmaciesByStoreName(storeName, cb)
+
+### API
+
+- list      `GET /pharmacies?filter=chainName:cvs`
+- list      `GET /pharmacies?filter=storeName:belle+hall`
 
 
 ## User Story 9 - Manage Patient Prescriptions

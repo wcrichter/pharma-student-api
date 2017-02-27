@@ -1,33 +1,15 @@
 const express = require('express')
 const app = express()
-const {
-    getUniqueForms,
-    listMedsByLabel,
-    getUniqueIngredients,
-    listMedsByIngredient,
-    listMedsByForm,
-    getMed,
-    addPatient,
-    getPatients,
-    listPatientsByLastName,
-    getUniqueConditions,
-    listPatientsByCondition,
-    updatePatient,
-    deletePatient,
-    getPatient
-} = require('./dal.js')
-const {
-    split,
-    omit
-} = require('ramda')
-const HTTPError = require('node-http-error')
-const port = process.env.PORT || 8080
+const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
+        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
+        addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
+        updatePatient, deletePatient, getPatient} = require('./dal.js')
+const {split, omit} = require('ramda')
 const bodyParser = require('body-parser')
+const HTTPError = require('node-http-error')
+const port = process.env.PORT || 8082
 
 app.use(bodyParser.json())
-
-
-
 
 app.get('/medications', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
@@ -125,14 +107,52 @@ app.get('/patients/:id', function (req, res, next) {
   })
 })
 
-
 app.delete('/patients/:id', function (req, res, next) {
   deletePatient(req.params.id, function (err, person) {
     if (err) return next(new HTTPError(err.status, err.message, err))
     res.send(person)
+
   })
 })
 
+
+/////////////// Pharmacy functions /////////////////////
+app.put('/pharmacies/:id', function(req, res, next) {
+  updatePharmacy(req.body, function(err, pharmacy) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(pharmacy)
+  })
+})
+
+app.post('/pharmacies', function (req, res, next) {
+  addPharmacy(req.body, function (err, docs) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(docs)
+  })
+})
+
+app.get('/pharmacies/:id', function(req, res, next) {
+  getPharmacy(req.params.id, function(err, returnedPharmacy) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(returnedPharmacy)
+  })
+})
+
+app.get('/pharmacies', function(req, res, next) {
+  listPharmacies(function(err, pharmacyList) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(pharmacyList)
+  })
+})
+
+
+app.delete('/pharmacies/:id', function (req, res, next) {
+  deletePharmacy(req.params.id, function (err, doc) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(doc)
+  })
+})
+    
 
 ///////////// error handler /////////////////////////////
 app.use(function(err, req, res, next) {
