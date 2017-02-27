@@ -6,13 +6,20 @@ const {
     getUniqueIngredients,
     listMedsByIngredient,
     listMedsByForm,
-    getMed
+    getMed,
+    addPatient
 } = require('./dal.js')
 const {
     split
 } = require('ramda')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8080
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+
+
+
 
 app.get('/medications', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
@@ -51,7 +58,13 @@ app.get('/medications/forms', function (req, res, next) {
   })
 })
 
-
+app.post('/patients', function (req, res, next) {
+  console.log(req.body)
+  addPatient(req.body, function (err, dalResponse) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.send(dalResponse)
+  })
+})
 
 
 
