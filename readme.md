@@ -26,10 +26,11 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.:
 
+- `id`: "patient_6664_<last>_<first>_<patientNumber>"
 - patientNumber Ex: 1239484
 - firstName Ex: Gomez
 - lastName "Adams"
-- age 70,
+- date - date ISO format
 - gender "M",
 - ethnicity "H".  Valid ethnicity codes include ("W - White, AA - African American, H - Hispanic, NA - Native American/ Pacific Islander")
 - last4SSN  "6664",
