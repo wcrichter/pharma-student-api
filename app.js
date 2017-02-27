@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
 const {
+    addPharmacy,
     getUniqueForms,
     listMedsByLabel,
     getUniqueIngredients,
@@ -13,6 +15,8 @@ const {
 } = require('ramda')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8080
+
+app.use(bodyParser.json())
 
 app.get('/medications', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
@@ -48,6 +52,15 @@ app.get('/medications/forms', function (req, res, next) {
   getUniqueForms(function (err, forms) {
     if (err) return next(new HTTPError(err.status, err.message, err))
     res.status(200).send(forms)
+  })
+})
+
+
+
+app.post('/pharmacies', function (req, res, next) {
+  addPharmacy(req.body, function (err, docs) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(docs)
   })
 })
 
