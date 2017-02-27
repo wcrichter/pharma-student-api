@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy" //remember pharmacy for me
+const couch_dbname = "pharmacy-new" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
@@ -172,7 +172,7 @@ function preppedNewPharmacy(doc) {
 ////////PATIENTS////////
 
 function addPatient(patient, cb7) {
-
+    patient.type = "patient"
     patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
     db.put(patient, function(err, res) {
         if (err) return cb7(err)
