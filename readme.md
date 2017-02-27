@@ -24,13 +24,16 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### User Story 4 - Manage Patients
 
-As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.:
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add, read, edit, delete.:
 
-- `id`: "patient_6664_<last>_<first>_<patientNumber>"
-- patientNumber Ex: 1239484
-- firstName Ex: Gomez
+- `id`: "patient <last> <first> <last4> <patientNumber>"
+- type: "patient"
+- patientNumber Ex: "1239484"
+- firstName Ex: "Gomez"
 - lastName "Adams"
-- date - date ISO format
+- birthDate: "1995-02-27T14:30Z"  "ISO DATE Format"  
+  - https://www.w3schools.com/jsref/jsref_toisostring.asp
+  - https://en.wikipedia.org/wiki/ISO_8601
 - gender "M",
 - ethnicity "H".  Valid ethnicity codes include ("W - White, AA - African American, H - Hispanic, NA - Native American/ Pacific Islander")
 - last4SSN  "6664",
@@ -40,10 +43,50 @@ As an medical assistant or RN within the doctor's office, I need the ability to 
     "Hyperthyroid"
   ]
 
+## Research ISO Dates
+
+ - 0) Research
+
+### Database
+
+  - 1) Model patient record
+
+### dal
+
+  - 2) create a function to add a person into the database
+  - 5) create dal functions to support read, update and delete.
+
+### API
+
+  - 3) Create the endpoint to enable adding of a person to the database
+  - 4) Call the endpoint to add (POST) people into the database
+  - 5) Create endpoints to support read (GET), update (PUT) and delete (DELETE).
+
 ## User Story 5 - Search Patients By Last Name
 
-As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.  
+As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.
 
+### DAL
+
+- `getPatients()`
+- `getPatientsByLastName()` - search by last name - create a function to utilize `db.allDocs()` with the following options:
+  - `include_docs: true`
+  - `start_key: "patient_<lastName>"`
+  - `end_key: "patient_<lastName>/uffff"`
+
+### API
+
+- `GET /patients?filter=lastname:smith`.  
+
+  ```
+  app.get('/patients', fn(req, res, next){
+
+    // TODO: see if filter is provided in query string.
+    req.query.filter...
+
+
+  })
+  ```
 ## User Story 6 - Search Patients By Conditions
 
 As a medical professional or pharmacist, I desire the ability to search for patients by conditions so that I can view basic a patient's demographic and medical conditions.  I want to pick from a unique list of all patient conditions in the database.  Once a condition is selected, I want to view all patients with the related condition.  
@@ -52,19 +95,40 @@ As a medical professional or pharmacist, I desire the ability to search for pati
 
 As a medical assistant, I need the ability to maintain a list of pharmacies so that doctors can prescribe medications to patients.  I need the ability to manage the following information:
 
+  - id - "pharmacy_storeChainName_storeName_storeNumber"
+  - type: "pharmacy"
   - storeNumber- "1001"
   - storeChainName -  "CVS"
+  - storeName - "Belle Hall"
   - streetAddress - "2000 Belle Hall Lane"
   - phone
   - city - "Mount Pleasant"
   - state - "SC"
   - zipCode - "29464"
 
-# User Story 8 - Search Pharmacies By storeNumber
+### Database
 
-  - As a medical assistant, I need the ability to search for pharmacies by store number or zip code when prescribing medications.  
+  - 1) Model pharmacy record JSON)
 
+### DAL
 
+  - create - a function to add a pharmacy:  `addPharmacy(pharmacy, cb)`
+  - read
+  - update
+  - delete
+  - list
+
+### API
+
+ -
+
+# User Story 8 - Search Pharmacies
+
+  - As a medical assistant, I need the ability to search for pharmacies by chain name or store name when prescribing medications.  
+
+### DAL
+
+- search
 
 
 ## API Resources/Endpoints
