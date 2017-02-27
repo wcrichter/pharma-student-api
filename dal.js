@@ -100,6 +100,17 @@ function getPharmacy(id, cb) {
     })
 }
 
+function deletePharmacy(id, cb) {
+  db.get (id, function (err, doc) {
+    if (err) return cb(err)
+
+    db.remove(doc, function (err, deletedPharmacy) {
+      if (err) return cb(err)
+      cb (null, deletedPharmacy)
+    })
+  })
+}
+
 function listPharmacies(cb) {
     db.allDocs({
             include_docs: true,
@@ -130,6 +141,7 @@ const dal = {
     updatePharmacy: updatePharmacy,
     getPharmacy: getPharmacy,
     listPharmacies: listPharmacies,
+    deletePharmacy: deletePharmacy,
     getUniqueForms: getUniqueForms,
     listMedsByLabel: listMedsByLabel,
     getUniqueIngredients: getUniqueIngredients,
