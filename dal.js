@@ -144,9 +144,14 @@ function listPharmacies(cb) {
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
-    doc._id = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber, doc.type = "pharmacy"
+  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
+
+  newId = newId.replace(" ", "_")
+    doc._id = newId
+    doc.type = "pharmacy"
     return doc
 }
+
 
 
 // function listMedsByForm(form, cb5) {
