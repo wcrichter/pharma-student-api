@@ -121,11 +121,11 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
 
 ### API
 
- - (Suzanne) create endpoint to call dal addPharmacy
- - (Chris) read endpoint to call dal...
- - (Stephen) update endpoint to call cal...
- - delete endpoint to call dal...
- - list endpoint to call dal...
+ - (Suzanne) create endpoint to call dal addPharmacy '/pharmacies'
+ - (Chris) read endpoint to call dal...              '/pharmacies/:id'  <= <pharmacy id>
+ - (Stephen) update endpoint to call dal...          '/pharmacies/:id'  <= <pharmacy id>
+ - delete endpoint to call dal...                    '/pharmacies/:id'  <= <pharmacy id>
+ - list endpoint to call dal...                      '/pharmacies'
 
 # User Story 8 - Search Pharmacies
 
