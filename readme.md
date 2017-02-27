@@ -22,9 +22,9 @@ As a doctor, I would like the ability to view a unique list of ingredients used 
 
 As a doctor, I would like the ability to view a unique list of medication forms (syrup, tablet, patch...) used in all our medications. After selecting an form from the list, provide a filtered list of medications that contain the selected form.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
-### User Story 4 - Manage Patients
+### User Story 4 - Manage Patients (CHANGE)
 
-As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add, read, edit, delete.:
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add (done), read (done), edit (done), delete (done).:
 
 - `id`: "patient <last> <first> <last4> <patientNumber>"
 - type: "patient"
@@ -62,9 +62,11 @@ As an medical assistant or RN within the doctor's office, I need the ability to 
   - 4) Call the endpoint to add (POST) people into the database
   - 5) Create endpoints to support read (GET), update (PUT) and delete (DELETE).
 
-## User Story 5 - Search Patients By Last Name
+## User Story 5 - Search Patients By Last Name (done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.
+
+* Related to this user story's request we realized we wanted functionality to get a patient by their unique id. (done)
 
 ### DAL
 
@@ -87,7 +89,7 @@ As a medical professional or pharmacist, I desire the ability to search for pati
 
   })
   ```
-## User Story 6 - Search Patients By Conditions
+## User Story 6 - Search Patients By Conditions (Done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by conditions so that I can view basic a patient's demographic and medical conditions.  I want to pick from a unique list of all patient conditions in the database.  Once a condition is selected, I want to view all patients with the related condition.  
 
@@ -127,7 +129,7 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
  - (Suzanne) delete endpoint to call dal...                    '/pharmacies/:id'  <= <pharmacy id>
  - (Chris) list endpoint to call dal...                      '/pharmacies?'
 
-# User Story 8 - Search Pharmacies
+## User Story 8 - Search Pharmacies
 
   - As a medical assistant, I need the ability to search for pharmacies by chain name or store name when prescribing medications.  
 
@@ -145,6 +147,93 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
 
 - list      `GET /pharmacies?filter=chainName:cvs`
 - list      `GET /pharmacies?filter=storeName:belle+hall`
+
+
+## User Story 9 - Manage Patient Prescriptions
+
+As a doctor, I need the ability to write a prescription to a patient for one or more medications.  When adding or editing a prescription I will:
+
+  - Search and select a patient
+  - Search, select, and add one or more medications
+  - Search and select the desired pharmacy.
+  - Complete the prescription by marking the `readyForPharmacy` property to `true`.
+
+When adding a medication, I will provide the frequency for the medication by selecting a frequency from a list of unique frequencies:  
+
+```
+{
+  "_id": "script_patient_washington_robert_7064_4277172_2017-2-04T12:35:00.000Z",
+  "type": "script",
+  "patientID": "patient_washington_robert_7064_4277172",
+  "pharmacyID": "pharmacy_cvs_belle_hall_1001",
+  "prescriptionDate": "2017-2-04T12:35:00.000Z"
+  "readyForPharmacy": true
+  "meds": [
+    {
+      "medication_id": "medication_aspirin_200mg_tablet",
+      "frequency": "daily"
+    },
+    {
+      "medication_id": "medication_amlodipine_20mg_syrup",
+      "frequency": "4x daily"
+    }
+  ]
+```
+
+
+## User Story 10 - Search Prescriptions
+
+As a pharmacist, I need the ability to search prescriptions assigned to my pharmacy and that are ready to be fulfilled (`readyForPharmacy === true`).  Once I select a prescription, I need to view the various medications listed within the prescription, so I can fill them.
+
+```
+{
+  "_id": "script_patient_washington_robert_7064_4277172_2017-2-04T12:35:00.000Z",
+  "type": "script",
+  "patientID": "patient_washington_robert_7064_4277172",
+  "pharmacyID": "pharmacy_cvs_belle_hall_1001",
+  "prescriptionDate": "2017-2-04T12:35:00.000Z"
+
+  "meds": [
+    {
+      "medication_id": "medication_aspirin_200mg_tablet",
+      "frequency": "daily",
+      "dispensedDate": "2017-2-05T14:48:00.000Z"
+    },
+    {
+      "medication_id": "medication_amlodipine_20mg_syrup",
+      "frequency": "4x daily"
+    }
+  ]
+```
+
+## User Story 11 - Dispense medication
+
+Once, I have filled a particular medication within a prescription, I will update the medication with a `dispendedDate`.  Medications with no `dispensedDate` have not been dispensed to the patient.  
+
+```
+{
+  "_id": "script_patient_washington_robert_7064_4277172_2017-2-04T12:35:00.000Z",
+  "type": "script",
+  "patientID": "patient_washington_robert_7064_4277172",
+  "pharmacyID": "pharmacy_cvs_belle_hall_1001",
+  "prescriptionDate": "2017-2-04T12:35:00.000Z"
+
+  "meds": [
+    {
+      "medication_id": "medication_aspirin_200mg_tablet",
+      "frequency": "daily",
+      "dispensedDate": "2017-2-05T14:48:00.000Z"
+    },
+    {
+      "medication_id": "medication_amlodipine_20mg_syrup",
+      "frequency": "4x daily"
+    }
+  ]
+```
+
+## User Story 12 - View Prescription: Detailed View
+
+As a pharmacist of doctor, I would like the ability to view the patient details, pharmacy details, and medications (not details) for a given pers
 
 
 ## API Resources/Endpoints

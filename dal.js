@@ -6,18 +6,24 @@ const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
     uniq,
-    prop
+    prop,
+    omit
 } = require('ramda')
 
 
+
 function getMed(medId, cb) {
-    // go to couch and get the med using db.get()
-    // return the document back to the caller of the getMed().
-    //   The caller will pass in a callback (cb).
     db.get(medId, function(err, doc) {
         if (err) return cb(err)
         cb(null, doc)
     })
+}
+
+function getPatient(patientId, cb) {
+  db.get(patientId, function(err, patient) {
+      if (err) return cb(err)
+      cb(null, patient)
+  })
 }
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
@@ -66,8 +72,6 @@ function getUniqueForms(cb) {
     })
 }
 
-
-// Does the below line of code need to be here???
 const returnDoc = row => row.doc
 
 
@@ -145,10 +149,106 @@ function preppedNewPharmacy(doc) {
 }
 
 
+// function listMedsByForm(form, cb5) {
+//     db.query('medsByForm', {
+//         include_docs: true,
+//         keys: [form]
+//     }, function(err, res) {
+//         if (err) return cb5(err)
+//         cb5(null, map(returnDoc, res.rows))
+//     })
+// }
+
+
+// function getUniqueForms(cb6) {
+//     db.query('medsByForm', null, function(err, res) {
+//         if (err) return cb6(err)
+//         cb6(null, uniq(map(row => row.key, res.rows)))
+//     })
+// }
+
+
+
+////////PATIENTS////////
+
+function addPatient(patient, cb7) {
+
+    patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
+    db.put(patient, function(err, res) {
+        if (err) return cb7(err)
+        cb7(null, res)
+    })
+}
+
+
+function getPatients(cb8) {
+    db.allDocs({
+        include_docs: true,
+        start_key: "patient_",
+        end_key: "patient_\uffff"
+    }, function(err, res) {
+        if (err) return cb8(err)
+        cb8(null, (map(obj => omit("type", obj.doc), res.rows)))
+    })
+}
+
+
+function listPatientsByLastName(lastName, cb9) {
+    db.query('patientsByLastName', {
+        include_docs: true,
+        keys: [lastName]
+    }, function(err, res) {
+        if (err) return cb9(err)
+        cb9(null, map(returnDoc, res.rows))
+    })
+}
+
+function listPatientsByCondition(condition, cb14) {
+    db.query('patientsByCondition', {
+        include_docs: true,
+        keys: [condition]
+    }, function(err, res) {
+        if (err) return cb14(err)
+        cb14(null, map(returnDoc, res.rows))
+    })
+}
+
+function getUniqueConditions(cb12) {
+    db.query('patientsByCondition', null, function(err, res) {
+        if (err) return cb12(err)
+        cb12(null, uniq(map(row => row.key, res.rows)))
+    })
+}
+
+function updatePatient (patient, cb) {
+  patient.type = "patient"
+  db.put(patient, function (err, res) {
+    if (err) return cb(err)
+    cb(null, res)
+  })
+}
+
+function deletePatient (id, cb) {
+  db.get(id, function (err, doc) {
+    if (err) return cb(err)
+    db.remove(doc, function (err, removedDoc) {
+    if (err) return cb(err)
+    cb(null, removedDoc)
+  })
+})
+}
+
+function getPatient(patientId, cb) {
+  db.get(patientId, function(err, patient) {
+      if (err) return cb(err)
+      cb(null, patient)
+  })
+}
+
+
 function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
 }
-
 
 
 const dal = {
@@ -158,11 +258,19 @@ const dal = {
     listPharmacies: listPharmacies,
     deletePharmacy: deletePharmacy,
     getUniqueForms: getUniqueForms,
+    getUniqueConditions: getUniqueConditions,
     listMedsByLabel: listMedsByLabel,
     getUniqueIngredients: getUniqueIngredients,
     listMedsByIngredient: listMedsByIngredient,
     listMedsByForm: listMedsByForm,
-    getMed: getMed
+    getMed: getMed,
+    addPatient: addPatient,
+    getPatients: getPatients,
+    listPatientsByLastName: listPatientsByLastName,
+    listPatientsByCondition: listPatientsByCondition,
+    updatePatient: updatePatient,
+    deletePatient: deletePatient,
+    getPatient: getPatient
 }
 
 module.exports = dal

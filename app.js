@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
-        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy} = require('./dal.js')
-const {split} = require('ramda')
+        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
+        addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
+        updatePatient, deletePatient, getPatient} = require('./dal.js')
+const {split, omit} = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
@@ -32,17 +34,84 @@ app.get('/medications', function(req, res, next) {
     }
 })
 
-app.get('/medications/ingredients', function (req, res, next) {
-  getUniqueIngredients(function (err, ingredients) {
-    if (err) return next(new HTTPError(err.status, err.message, err))
-    res.status(200).send(ingredients)
+
+
+app.get('/medications/ingredients', function(req, res, next) {
+    getUniqueIngredients(function(err, ingredients) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(ingredients)
+    })
+})
+
+app.get('/medications/forms', function(req, res, next) {
+    getUniqueForms(function(err, forms) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(forms)
+    })
+})
+
+//////PATIENTS//////
+
+//Post/Add a patient
+app.post('/patients', function(req, res, next) {
+    console.log(req.body)
+    addPatient(req.body, function(err, dalResponse) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.send(dalResponse)
+    })
+})
+
+
+app.get('/patients', function(req, res, next) {
+    if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
+        const result = split(':', req.query.filter)
+        listPatientsByLastName(result[1], function(err, patient) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patient)
+        })
+    } else if (req.query.filter && split(':', req.query.filter)[0] === 'condition') {
+        const result = split(':', req.query.filter)
+        listPatientsByCondition(result[1], function(err, patient) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patient)
+        })
+    } else if (!req.query.filter) {
+        getPatients(function(err, patients) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patients)
+        })
+    } else {
+        return res.status(200).send([])
+    }
+})
+
+app.get('/patients/conditions', function(req, res, next) {
+    getUniqueConditions(function(err, conditions) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(conditions)
+    })
+})
+
+app.put('/patients/:id', function (req, res, next) {
+  console.log(req.body)
+  updatePatient(req.body, function (err, dalResponse) {
+    if (err) return next(new HTTPError(err.status, err.messsge, err))
+    res.send(dalResponse)
   })
 })
 
-app.get('/medications/forms', function (req, res, next) {
-  getUniqueForms(function (err, forms) {
+app.get('/patients/:id', function (req, res, next) {
+  getPatient(req.params.id, function (err, resp) {
     if (err) return next(new HTTPError(err.status, err.message, err))
-    res.status(200).send(forms)
+    res.send(resp)
+  })
+})
+
+app.delete('/patients/:id', function (req, res, next) {
+  deletePatient(req.params.id, function (err, person) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.send(person)
+
   })
 })
 
@@ -83,7 +152,7 @@ app.delete('/pharmacies/:id', function (req, res, next) {
     res.status(200).send(doc)
   })
 })
-
+    
 
 ///////////// error handler /////////////////////////////
 app.use(function(err, req, res, next) {
