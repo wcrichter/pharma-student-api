@@ -6,7 +6,8 @@ const {
     getUniqueIngredients,
     listMedsByIngredient,
     listMedsByForm,
-    getMed
+    getMed,
+    getPharmacy
 } = require('./dal.js')
 const {
     split
@@ -50,6 +51,39 @@ app.get('/medications/forms', function (req, res, next) {
     res.status(200).send(forms)
   })
 })
+
+
+//HTTP request(GET) to get a pharmacy from database
+app.get('/pharmacies/:id', function(req, res, next) {
+  getPharmacy(req.params.id, function(err, returnedPharmacy) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(returnedPharmacy)
+  })
+})
+
+
+// app.get('/medications', function(req, res, next) {
+//     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
+//         const result = split(':', req.query.filter)
+//         listMedsByIngredient(result[1], function(err, meds) {
+//             if (err) return next(new HTTPError(err.status, err.message, err))
+//             res.status(200).send(meds)
+//         })
+//     } else if (req.query.filter && split(':', req.query.filter)[0] === 'form') {
+//         const result = split(':', req.query.filter)
+//         listMedsByForm(result[1], function(err, meds) {
+//             if (err) return next(new HTTPError(err.status, err.message, err))
+//             res.status(200).send(meds)
+//         })
+//     } else if (!req.query.filter) {
+//         listMedsByLabel(function(err, meds) {
+//             if (err) return next(new HTTPError(err.status, err.message, err))
+//             res.status(200).send(meds)
+//         })
+//     } else {
+//         res.status(200).send([])
+//     }
+// })
 
 
 

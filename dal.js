@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy-new"  //remember pharmacy for me
+const couch_dbname = "pharmacy"  //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {map, uniq} = require('ramda')
 
@@ -54,6 +54,15 @@ function getUniqueForms(cb) {
   })
 }
 
+//get a pharmacy from database
+function getPharmacy(id, cb) {
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
+        cb(null, doc)
+    })
+}
+
+
 const returnDoc = row => row.doc
 
 
@@ -67,6 +76,7 @@ listMedsByLabel: listMedsByLabel,
 getUniqueIngredients: getUniqueIngredients,
 listMedsByIngredient: listMedsByIngredient,
 listMedsByForm: listMedsByForm,
-getMed: getMed}
+getMed: getMed,
+getPharmacy: getPharmacy}
 
 module.exports = dal
