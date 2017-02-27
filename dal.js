@@ -104,7 +104,22 @@ function listPatientsByLastName(lastName, cb9) {
     })
 }
 
+function listPatientsByCondition(condition, cb14) {
+    db.query('patientsByCondition', {
+        include_docs: true,
+        keys: [condition]
+    }, function(err, res) {
+        if (err) return cb14(err)
+        cb14(null, map(returnDoc, res.rows))
+    })
+}
 
+function getUniqueConditions(cb12) {
+    db.query('patientsByCondition', null, function(err, res) {
+        if (err) return cb12(err)
+        cb12(null, uniq(map(row => row.key, res.rows)))
+    })
+}
 
 
 
@@ -122,7 +137,9 @@ const dal = {
     getMed: getMed,
     addPatient: addPatient,
     getPatients: getPatients,
-    listPatientsByLastName: listPatientsByLastName
+    listPatientsByLastName: listPatientsByLastName,
+    getUniqueConditions: getUniqueConditions,
+    listPatientsByCondition: listPatientsByCondition
 }
 
 module.exports = dal

@@ -9,7 +9,9 @@ const {
     getMed,
     addPatient,
     getPatients,
-    listPatientsByLastName
+    listPatientsByLastName,
+    getUniqueConditions,
+    listPatientsByCondition
 } = require('./dal.js')
 const {
     split,
@@ -49,57 +51,60 @@ app.get('/medications', function(req, res, next) {
 
 
 
-app.get('/medications/ingredients', function (req, res, next) {
-  getUniqueIngredients(function (err, ingredients) {
-    if (err) return next(new HTTPError(err.status, err.message, err))
-    res.status(200).send(ingredients)
-  })
+app.get('/medications/ingredients', function(req, res, next) {
+    getUniqueIngredients(function(err, ingredients) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(ingredients)
+    })
 })
 
-app.get('/medications/forms', function (req, res, next) {
-  getUniqueForms(function (err, forms) {
-    if (err) return next(new HTTPError(err.status, err.message, err))
-    res.status(200).send(forms)
-  })
+app.get('/medications/forms', function(req, res, next) {
+    getUniqueForms(function(err, forms) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(forms)
+    })
 })
 
 //////PATIENTS//////
 
 //Post/Add a patient
-app.post('/patients', function (req, res, next) {
-  console.log(req.body)
-  addPatient(req.body, function (err, dalResponse) {
-    if (err) return next(new HTTPError(err.status, err.message, err))
-    res.send(dalResponse)
-  })
+app.post('/patients', function(req, res, next) {
+    console.log(req.body)
+    addPatient(req.body, function(err, dalResponse) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.send(dalResponse)
+    })
 })
-
-//Get patient
-/*
-app.get('/patients', function (req, res, next) {
-  getPatients(function (err, resp) {
-    if (err) return next(new HTTPError(err.status, err.message, err))
-    res.send(resp)
-  })
-})
-*/
-
 
 app.get('/patients', function(req, res, next) {
-  if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
-    const result = split(':', req.query.filter)
-    listPatientsByLastName(result[1], function(err, patient) {
-      if (err) return next(new HTTPError(err.status, err.message, err))
-      res.status(200).send(patient)
-    })
-  } else if (!req.query.filter) {
-      getPatients(function(err, patients) {
-          if (err) return next(new HTTPError(err.status, err.message, err))
-          res.status(200).send(patients)
-      })
-  } else {return res.status(200).send([])}
+    if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
+        const result = split(':', req.query.filter)
+        listPatientsByLastName(result[1], function(err, patient) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patient)
+        })
+    } else if (req.query.filter && split(':', req.query.filter)[0] === 'condition') {
+        const result = split(':', req.query.filter)
+        listPatientsByCondition(result[1], function(err, patient) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patient)
+        })
+    } else if (!req.query.filter) {
+        getPatients(function(err, patients) {
+            if (err) return next(new HTTPError(err.status, err.message, err))
+            res.status(200).send(patients)
+        })
+    } else {
+        return res.status(200).send([])
+    }
 })
 
+app.get('/patients/conditions', function(req, res, next) {
+    getUniqueConditions(function(err, conditions) {
+        if (err) return next(new HTTPError(err.status, err.message, err))
+        res.status(200).send(conditions)
+    })
+})
 
 
 ///////////// error handler /////////////////////////////

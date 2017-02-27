@@ -87,7 +87,7 @@ As a medical professional or pharmacist, I desire the ability to search for pati
 
   })
   ```
-## User Story 6 - Search Patients By Conditions
+## User Story 6 - Search Patients By Conditions (Done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by conditions so that I can view basic a patient's demographic and medical conditions.  I want to pick from a unique list of all patient conditions in the database.  Once a condition is selected, I want to view all patients with the related condition.  
 
