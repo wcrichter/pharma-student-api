@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy-new"  //remember pharmacy for me
+const couch_dbname = "pharmacy"  //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {map, uniq} = require('ramda')
 
@@ -54,6 +54,7 @@ function getUniqueForms(cb) {
   })
 }
 
+// Does the below line of code need to be here???
 const returnDoc = row => row.doc
 
 
@@ -62,11 +63,25 @@ const returnDoc = row => row.doc
 //   console.log(forms)
 // })
 
+
+/////////////// Pharmacy functions /////////////////////
+function updatePharmacy(pharmacy, callMeMaybe) {
+  db.put(pharmacy, function(err, doc) {
+    if (err) return callMeMaybe(err)
+    callMeMaybe(null, doc)
+  })
+}
+
+
+
+
 const dal = {getUniqueForms: getUniqueForms,
 listMedsByLabel: listMedsByLabel,
 getUniqueIngredients: getUniqueIngredients,
 listMedsByIngredient: listMedsByIngredient,
 listMedsByForm: listMedsByForm,
-getMed: getMed}
+getMed: getMed,
+updatePharmacy: updatePharmacy
+}
 
 module.exports = dal
