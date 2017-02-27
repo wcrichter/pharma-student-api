@@ -22,9 +22,9 @@ As a doctor, I would like the ability to view a unique list of ingredients used 
 
 As a doctor, I would like the ability to view a unique list of medication forms (syrup, tablet, patch...) used in all our medications. After selecting an form from the list, provide a filtered list of medications that contain the selected form.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
-### User Story 4 - Manage Patients
+### User Story 4 - Manage Patients (CHANGE)
 
-As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add, read, edit, delete.:
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add (done), read (done), edit (done), delete (done).:
 
 - `id`: "patient <last> <first> <last4> <patientNumber>"
 - type: "patient"
@@ -62,9 +62,11 @@ As an medical assistant or RN within the doctor's office, I need the ability to 
   - 4) Call the endpoint to add (POST) people into the database
   - 5) Create endpoints to support read (GET), update (PUT) and delete (DELETE).
 
-## User Story 5 - Search Patients By Last Name
+## User Story 5 - Search Patients By Last Name (done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.
+
+* Related to this user story's request we realized we wanted functionality to get a patient by their unique id. (done)
 
 ### DAL
 
@@ -87,7 +89,7 @@ As a medical professional or pharmacist, I desire the ability to search for pati
 
   })
   ```
-## User Story 6 - Search Patients By Conditions
+## User Story 6 - Search Patients By Conditions (Done)
 
 As a medical professional or pharmacist, I desire the ability to search for patients by conditions so that I can view basic a patient's demographic and medical conditions.  I want to pick from a unique list of all patient conditions in the database.  Once a condition is selected, I want to view all patients with the related condition.  
 
