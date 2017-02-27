@@ -9,7 +9,7 @@ As a doctor, I would like the ability to view a list of medications (alpha sort 
 A medication contains the following information:
 
 - label (string) Ex: Aspirin 100mg tablet
-- ingredients (array of strings) Ex: ["Aspririn"]
+- ingredients (array of strings) Ex: ["Aspirin"]
 - amount (number) Ex: 100
 - unit (string) Ex: "mg"
 - form (string) Ex: "tablet"
@@ -21,6 +21,50 @@ As a doctor, I would like the ability to view a unique list of ingredients used 
 ### User Story 3 - List forms and filter meds by form
 
 As a doctor, I would like the ability to view a unique list of medication forms (syrup, tablet, patch...) used in all our medications. After selecting an form from the list, provide a filtered list of medications that contain the selected form.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
+
+### User Story 4 - Manage Patients
+
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.:
+
+- patientNumber Ex: 1239484
+- firstName Ex: Gomez
+- lastName "Adams"
+- age 70,
+- gender "M",
+- ethnicity "H".  Valid ethnicity codes include ("W - White, AA - African American, H - Hispanic, NA - Native American/ Pacific Islander")
+- last4SSN  "6664",
+- conditions: Ex:  [
+    "Anxiety",
+    "Hypertension",
+    "Hyperthyroid"
+  ]
+
+## User Story 5 - Search Patients By Last Name
+
+As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.  
+
+## User Story 6 - Search Patients By Conditions
+
+As a medical professional or pharmacist, I desire the ability to search for patients by conditions so that I can view basic a patient's demographic and medical conditions.  I want to pick from a unique list of all patient conditions in the database.  Once a condition is selected, I want to view all patients with the related condition.  
+
+## User Story 7 - Manage Pharmacies
+
+As a medical assistant, I need the ability to maintain a list of pharmacies so that doctors can prescribe medications to patients.  I need the ability to manage the following information:
+
+  - storeNumber- "1001"
+  - storeChainName -  "CVS"
+  - streetAddress - "2000 Belle Hall Lane"
+  - phone
+  - city - "Mount Pleasant"
+  - state - "SC"
+  - zipCode - "29464"
+
+# User Story 8 - Search Pharmacies By storeNumber
+
+  - As a medical assistant, I need the ability to search for pharmacies by store number or zip code when prescribing medications.  
+
+
+
 
 ## API Resources/Endpoints
 
