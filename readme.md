@@ -108,19 +108,24 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
 
 ### Database
 
-  - 1) Model pharmacy record JSON)
+  - 1) (Done) Model pharmacy record (JSON)
 
 ### DAL
 
-  - create - a function to add a pharmacy:  `addPharmacy(pharmacy, cb)`
-  - read
-  - update
+  - (Suzanne) create - a function to add a pharmacy:  `addPharmacy(pharmacy, cb)`
+    - create custom id; `pharmacy_walgreens_king_street_1005`
+  - (Chris) read                                     
+  - (Stephen) update
   - delete
   - list
 
 ### API
 
- -
+ - (Suzanne) create endpoint to call dal addPharmacy
+ - (Chris) read endpoint to call dal...
+ - (Stephen) update endpoint to call cal...
+ - delete endpoint to call dal...
+ - list endpoint to call dal...
 
 # User Story 8 - Search Pharmacies
 
