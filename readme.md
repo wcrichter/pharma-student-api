@@ -22,7 +22,7 @@ As a doctor, I would like the ability to view a unique list of ingredients used 
 
 As a doctor, I would like the ability to view a unique list of medication forms (syrup, tablet, patch...) used in all our medications. After selecting an form from the list, provide a filtered list of medications that contain the selected form.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
-### User Story 4 - Manage Patients
+### User Story 4 - Manage Patients (CHANGE)
 
 As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add, read, edit, delete.:
 
