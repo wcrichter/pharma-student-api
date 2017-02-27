@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
-        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy} = require('./dal.js')
+        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy} = require('./dal.js')
 const {split} = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
@@ -69,7 +69,20 @@ app.get('/pharmacies/:id', function(req, res, next) {
   })
 })
 
+app.get('/pharmacies', function(req, res, next) {
+  listPharmacies(function(err, pharmacyList) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(pharmacyList)
+  })
+})
 
+
+app.delete('/pharmacies/:id', function (req, res, next) {
+  deletePharmacy(req.params.id, function (err, doc) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(200).send(doc)
+  })
+})
 
 
 ///////////// error handler /////////////////////////////
