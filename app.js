@@ -1,19 +1,13 @@
 const express = require('express')
 const app = express()
-const {
-    getUniqueForms,
-    listMedsByLabel,
-    getUniqueIngredients,
-    listMedsByIngredient,
-    listMedsByForm,
-    getMed,
-    getPharmacy
-} = require('./dal.js')
-const {
-    split
-} = require('ramda')
+const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
+        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy} = require('./dal.js')
+const {split} = require('ramda')
+const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8082
+
+app.use(bodyParser.json())
 
 app.get('/medications', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
@@ -53,37 +47,27 @@ app.get('/medications/forms', function (req, res, next) {
 })
 
 
-//HTTP request(GET) to get a pharmacy from database
+/////////////// Pharmacy functions /////////////////////
+app.put('/pharmacies/:id', function(req, res, next) {
+  updatePharmacy(req.body, function(err, pharmacy) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(pharmacy)
+  })
+})
+
+app.post('/pharmacies', function (req, res, next) {
+  addPharmacy(req.body, function (err, docs) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(docs)
+  })
+})
+
 app.get('/pharmacies/:id', function(req, res, next) {
   getPharmacy(req.params.id, function(err, returnedPharmacy) {
     if (err) return next(new HTTPError(err.status, err.message, err))
     res.status(200).send(returnedPharmacy)
   })
 })
-
-
-// app.get('/medications', function(req, res, next) {
-//     if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
-//         const result = split(':', req.query.filter)
-//         listMedsByIngredient(result[1], function(err, meds) {
-//             if (err) return next(new HTTPError(err.status, err.message, err))
-//             res.status(200).send(meds)
-//         })
-//     } else if (req.query.filter && split(':', req.query.filter)[0] === 'form') {
-//         const result = split(':', req.query.filter)
-//         listMedsByForm(result[1], function(err, meds) {
-//             if (err) return next(new HTTPError(err.status, err.message, err))
-//             res.status(200).send(meds)
-//         })
-//     } else if (!req.query.filter) {
-//         listMedsByLabel(function(err, meds) {
-//             if (err) return next(new HTTPError(err.status, err.message, err))
-//             res.status(200).send(meds)
-//         })
-//     } else {
-//         res.status(200).send([])
-//     }
-// })
 
 
 

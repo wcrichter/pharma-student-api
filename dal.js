@@ -3,7 +3,7 @@ PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
 const couch_dbname = "pharmacy"  //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
-const {map, uniq} = require('ramda')
+const {map, uniq, prop} = require('ramda')
 
 
 function getMed(medId, cb) {
@@ -54,7 +54,33 @@ function getUniqueForms(cb) {
   })
 }
 
-//get a pharmacy from database
+
+// Does the below line of code need to be here???
+const returnDoc = row => row.doc
+
+
+/////////////// Pharmacy functions /////////////////////
+function addPharmacy(doc, cb) {
+  checkRequiredInputs(doc)?
+  db.put(preppedNewPharmacy(doc), function (err, addedPharmacy) {
+    if (err) return cb(err)
+    cb(null, addedPharmacy)
+  }): cb({
+    error: "bad_request",
+    reason: "bad_request",
+    name: "bad_request",
+    status: "400",
+    message: "need all required inputs..."
+  })
+}
+
+function updatePharmacy(pharmacy, callMeMaybe) {
+  db.put(pharmacy, function(err, doc) {
+    if (err) return callMeMaybe(err)
+    callMeMaybe(null, doc)
+  })
+}
+
 function getPharmacy(id, cb) {
     db.get(id, function(err, doc) {
         if (err) return cb(err)
@@ -62,21 +88,29 @@ function getPharmacy(id, cb) {
     })
 }
 
+/////////////////// helper functions //////////////////////////
+function preppedNewPharmacy (doc) {
+  doc._id = "pharmacy_" + doc.storeChainName+"_"+doc.storeName+"_"+doc.storeNumber, doc.type = "pharmacy"
+  return doc
+}
 
-const returnDoc = row => row.doc
+
+function checkRequiredInputs (doc) {
+  return prop('storeNumber', doc)&& prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
+}
 
 
-// getUniqueForms(function(err, forms) {
-//   if (err) return console.log(err)
-//   console.log(forms)
-// })
 
-const dal = {getUniqueForms: getUniqueForms,
-listMedsByLabel: listMedsByLabel,
-getUniqueIngredients: getUniqueIngredients,
-listMedsByIngredient: listMedsByIngredient,
-listMedsByForm: listMedsByForm,
-getMed: getMed,
-getPharmacy: getPharmacy}
+const dal = {
+  addPharmacy: addPharmacy,
+  updatePharmacy: updatePharmacy,
+  getPharmacy: getPharmacy,
+  getUniqueForms: getUniqueForms,
+  listMedsByLabel: listMedsByLabel,
+  getUniqueIngredients: getUniqueIngredients,
+  listMedsByIngredient: listMedsByIngredient,
+  listMedsByForm: listMedsByForm,
+  getMed: getMed
+}
 
 module.exports = dal
