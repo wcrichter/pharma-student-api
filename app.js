@@ -13,7 +13,8 @@ const {
     getUniqueConditions,
     listPatientsByCondition,
     updatePatient,
-    deletePatient
+    deletePatient,
+    getPatient
 } = require('./dal.js')
 const {
     split,
@@ -78,6 +79,7 @@ app.post('/patients', function(req, res, next) {
     })
 })
 
+
 app.get('/patients', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
         const result = split(':', req.query.filter)
@@ -113,6 +115,13 @@ app.put('/patients/:id', function (req, res, next) {
   updatePatient(req.body, function (err, dalResponse) {
     if (err) return next(new HTTPError(err.status, err.messsge, err))
     res.send(dalResponse)
+  })
+})
+
+app.get('/patients/:id', function (req, res, next) {
+  getPatient(req.params.id, function (err, resp) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.send(resp)
   })
 })
 

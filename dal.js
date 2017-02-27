@@ -20,6 +20,13 @@ function getMed(medId, cb1) {
     })
 }
 
+function getPatient(patientId, cb) {
+  db.get(patientId, function(err, patient) {
+      if (err) return cb(err)
+      cb(null, patient)
+  })
+}
+
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
 
 function listMedsByLabel(cb2) {
@@ -139,6 +146,12 @@ function deletePatient (id, cb) {
 })
 }
 
+function getPatient(patientId, cb) {
+  db.get(patientId, function(err, patient) {
+      if (err) return cb(err)
+      cb(null, patient)
+  })
+}
 
 
 // getUniqueForms(function(err, forms) {
@@ -159,7 +172,8 @@ const dal = {
     getUniqueConditions: getUniqueConditions,
     listPatientsByCondition: listPatientsByCondition,
     updatePatient: updatePatient,
-    deletePatient: deletePatient
+    deletePatient: deletePatient,
+    getPatient: getPatient
 }
 
 module.exports = dal
