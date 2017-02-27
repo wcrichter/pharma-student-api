@@ -88,6 +88,22 @@ function getPharmacy(id, cb) {
     })
 }
 
+function listPharmaciesByChainName(chain, cb) {
+  db.query('pharmaciesByChainName', {include_docs: true, keys: [chain]}, function(err, chain) {
+    if (err) return cb(err)
+    cb(chain)
+  })
+}
+
+function listPharmaciesByStoreName(storeName, cb) {
+  db.query('pharmacyByStoreName', {include_docs: true, keys: [storeName]}, function(err, store) {
+    if (err) return cb(err)
+    cb(null, store)
+  })
+}
+
+
+
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy (doc) {
   doc._id = "pharmacy_" + doc.storeChainName+"_"+doc.storeName+"_"+doc.storeNumber, doc.type = "pharmacy"
