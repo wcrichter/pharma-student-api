@@ -107,14 +107,14 @@ function getPharmacy(id, cb) {
 function listPharmaciesByChainName(chain, cb) {
   db.query('pharmaciesByChainName', {include_docs: true, keys: [chain]}, function(err, chain) {
     if (err) return cb(err)
-    cb(chain)
+    cb(null, chain.rows)
   })
 }
 
 function listPharmaciesByStoreName(storeName, cb) {
   db.query('pharmacyByStoreName', {include_docs: true, keys: [storeName]}, function(err, store) {
     if (err) return cb(err)
-    cb(null, store)
+    cb(null, store.rows)
   })
 }
 
@@ -262,6 +262,8 @@ const dal = {
     getPharmacy: getPharmacy,
     listPharmacies: listPharmacies,
     deletePharmacy: deletePharmacy,
+    listPharmaciesByChainName: listPharmaciesByChainName,
+    listPharmaciesByStoreName: listPharmaciesByStoreName,
     getUniqueForms: getUniqueForms,
     getUniqueConditions: getUniqueConditions,
     listMedsByLabel: listMedsByLabel,
