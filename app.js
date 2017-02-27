@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
 const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
-        listMedsByForm, getMed, updatePharmacy} = require('./dal.js')
+        listMedsByForm, getMed, updatePharmacy, addPharmacy} = require('./dal.js')
 const {split} = require('ramda')
-const HTTPError = require('node-http-error')
 const bodyParser = require('body-parser')
+const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
 
 app.use(bodyParser.json())
@@ -55,7 +55,12 @@ app.put('/pharmacies/:id', function(req, res, next) {
   })
 })
 
-
+app.post('/pharmacies', function (req, res, next) {
+  addPharmacy(req.body, function (err, docs) {
+    if (err) return next(new HTTPError(err.status, err.message, err))
+    res.status(201).send(docs)
+  })
+})
 
 
 
