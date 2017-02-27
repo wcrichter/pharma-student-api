@@ -66,6 +66,8 @@ As an medical assistant or RN within the doctor's office, I need the ability to 
 
 As a medical professional or pharmacist, I desire the ability to search for patients by last name so that I can view basic a patient's demographic and medical conditions.
 
+* Related to this user story's request we realized we wanted functionality to get a patient by their unique id. (done)
+
 ### DAL
 
 - `getPatients()`
