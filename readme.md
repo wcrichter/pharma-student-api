@@ -24,7 +24,7 @@ As a doctor, I would like the ability to view a unique list of medication forms 
 
 ### User Story 4 - Manage Patients (CHANGE)
 
-As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add (done), read (done), edit, delete.:
+As an medical assistant or RN within the doctor's office, I need the ability to manage basic patient demographic information and conditions.  Include add (done), read (done), edit (done), delete (done).:
 
 - `id`: "patient <last> <first> <last4> <patientNumber>"
 - type: "patient"
