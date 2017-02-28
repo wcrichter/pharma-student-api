@@ -7,7 +7,9 @@ const {
     map,
     uniq,
     prop,
-    omit
+    omit,
+    compose,
+    drop
 } = require('ramda')
 
 
@@ -137,46 +139,35 @@ function deletePharmacy(id, cb) {
 }
 
 var addSortToken = function(queryRow) {
-    queryRow.doc.sortToken = queryRow.key;
-    return queryRow.doc;
+    queryRow.doc.startKey = queryRow.key;
+    return queryRow;
 }
 
-function listPharmacies(cb, startKey, limit) {
-
+function listPharmacies(startKey, limit, cb) {
+    let options = {}
     if (startKey) {
-        db.allDocs(sortBy, {
-                startkey: startKey,
-                limit: limit,
-                include_docs: true
-            },
-            function(err, list) {
-                if (err) return cb(err)
-
-                const pagedDocs = compose(
-                  map(x => x.doc),
-                  map(addSortToken)
-                )(list.rows)
-                cb(null, map(x => x.doc, list.rows))
-            })
-    } else {
-      db.allDocs({
-              include_docs: true,
-              startkey: "pharmacy_",
-              endkey: "pharmacy_\uffff"
-          },
-          function(err, list) {
-              if (err) return cb(err)
-              cb(null, map(x => x.doc, list.rows))
-          })
+        options.startkey = startKey
     }
+    options.limit = limit ? limit + 1 : 10
+    options.include_docs = true
 
+    db.query("pharmacies", options,
+        function(err, list) {
+            if (err) return cb(err)
+            const pagedDocs = compose(
+                drop(1),
+                map(x => x.doc),
+                map(addSortToken)
+            )(list.rows)
+            cb(null, pagedDocs)
+        })
 }
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
-    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber, doc.type = "pharmacy"
-
+    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
     doc._id = newID.replace(" ", "_")
+    doc.type = "pharmacy"
 
     return doc
 }
