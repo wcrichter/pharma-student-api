@@ -11,6 +11,7 @@ const {
 } = require('ramda')
 
 
+
 function bulkAddPatients(patients, cb) {
   db.bulkDocs(patients, function (err, res) {
       if (err) return cb(err)
