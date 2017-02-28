@@ -4,7 +4,7 @@ const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredi
         listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
         addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
         updatePatient, deletePatient, getPatient} = require('./dal.js')
-const {split, omit} = require('ramda')
+const { split } = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
@@ -12,13 +12,13 @@ const port = process.env.PORT || 8082
 app.use(bodyParser.json())
 
 app.get('/medications', function(req, res, next) {
-    if (req.query.filter && split(':', req.query.filter)[0] === 'ingredient') {
+    if (req.query.filter && split(':', req.query.filter)[0].toLowerCase() === 'ingredient') {
         const result = split(':', req.query.filter)
         listMedsByIngredient(result[1], function(err, meds) {
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(meds)
         })
-    } else if (req.query.filter && split(':', req.query.filter)[0] === 'form') {
+    } else if (req.query.filter && split(':', req.query.filter)[0].toLowerCase() === 'form') {
         const result = split(':', req.query.filter)
         listMedsByForm(result[1], function(err, meds) {
             if (err) return next(new HTTPError(err.status, err.message, err))
@@ -63,13 +63,13 @@ app.post('/patients', function(req, res, next) {
 
 
 app.get('/patients', function(req, res, next) {
-    if (req.query.filter && split(':', req.query.filter)[0] === 'lastName') {
+    if (req.query.filter && split(':', req.query.filter)[0].toLowerCase() === 'lastname') {
         const result = split(':', req.query.filter)
         listPatientsByLastName(result[1], function(err, patient) {
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(patient)
         })
-    } else if (req.query.filter && split(':', req.query.filter)[0] === 'condition') {
+    } else if (req.query.filter && split(':', req.query.filter)[0].toLowerCase() === 'condition') {
         const result = split(':', req.query.filter)
         listPatientsByCondition(result[1], function(err, patient) {
             if (err) return next(new HTTPError(err.status, err.message, err))
@@ -152,7 +152,7 @@ app.delete('/pharmacies/:id', function (req, res, next) {
     res.status(200).send(doc)
   })
 })
-    
+
 
 ///////////// error handler /////////////////////////////
 app.use(function(err, req, res, next) {
