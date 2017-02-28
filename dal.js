@@ -174,7 +174,10 @@ function listPharmacies(cb, startKey, limit) {
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
-    doc._id = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber, doc.type = "pharmacy"
+    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber, doc.type = "pharmacy"
+
+    doc._id = newID.replace(" ", "_")
+
     return doc
 }
 
