@@ -20,10 +20,10 @@ function getMed(medId, cb) {
 }
 
 function getPatient(patientId, cb) {
-  db.get(patientId, function(err, patient) {
-      if (err) return cb(err)
-      cb(null, patient)
-  })
+    db.get(patientId, function(err, patient) {
+        if (err) return cb(err)
+        cb(null, patient)
+    })
 }
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
@@ -105,41 +105,71 @@ function getPharmacy(id, cb) {
 }
 
 function listPharmaciesByChainName(chain, cb) {
-  db.query('pharmaciesByChainName', {include_docs: true, keys: [chain]}, function(err, chain) {
-    if (err) return cb(err)
-    cb(chain)
-  })
+    db.query('pharmaciesByChainName', {
+        include_docs: true,
+        keys: [chain]
+    }, function(err, chain) {
+        if (err) return cb(err)
+        cb(chain)
+    })
 }
 
 function listPharmaciesByStoreName(storeName, cb) {
-  db.query('pharmacyByStoreName', {include_docs: true, keys: [storeName]}, function(err, store) {
-    if (err) return cb(err)
-    cb(null, store)
-  })
+    db.query('pharmacyByStoreName', {
+        include_docs: true,
+        keys: [storeName]
+    }, function(err, store) {
+        if (err) return cb(err)
+        cb(null, store)
+    })
 }
 
 
 function deletePharmacy(id, cb) {
-  db.get (id, function (err, doc) {
-    if (err) return cb(err)
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
 
-    db.remove(doc, function (err, deletedPharmacy) {
-      if (err) return cb(err)
-      cb (null, deletedPharmacy)
+        db.remove(doc, function(err, deletedPharmacy) {
+            if (err) return cb(err)
+            cb(null, deletedPharmacy)
+        })
     })
-  })
 }
 
-function listPharmacies(cb) {
-    db.allDocs({
-            include_docs: true,
-            startkey: "pharmacy_",
-            endkey: "pharmacy_\uffff"
-        },
-        function(err, list) {
-            if (err) return cb(err)
-            cb(null, map(x=>x.doc, list.rows))
-        })
+var addSortToken = function(queryRow) {
+    queryRow.doc.sortToken = queryRow.key;
+    return queryRow.doc;
+}
+
+function listPharmacies(cb, startKey, limit) {
+
+    if (startKey) {
+        db.allDocs(sortBy, {
+                startkey: startKey,
+                limit: limit,
+                include_docs: true
+            },
+            function(err, list) {
+                if (err) return cb(err)
+
+                const pagedDocs = compose(
+                  map(x => x.doc),
+                  map(addSortToken)
+                )(list.rows)
+                cb(null, map(x => x.doc, list.rows))
+            })
+    } else {
+      db.allDocs({
+              include_docs: true,
+              startkey: "pharmacy_",
+              endkey: "pharmacy_\uffff"
+          },
+          function(err, list) {
+              if (err) return cb(err)
+              cb(null, map(x => x.doc, list.rows))
+          })
+    }
+
 }
 
 /////////////////// helper functions //////////////////////////
@@ -220,29 +250,29 @@ function getUniqueConditions(cb12) {
     })
 }
 
-function updatePatient (patient, cb) {
-  patient.type = "patient"
-  db.put(patient, function (err, res) {
-    if (err) return cb(err)
-    cb(null, res)
-  })
+function updatePatient(patient, cb) {
+    patient.type = "patient"
+    db.put(patient, function(err, res) {
+        if (err) return cb(err)
+        cb(null, res)
+    })
 }
 
-function deletePatient (id, cb) {
-  db.get(id, function (err, doc) {
-    if (err) return cb(err)
-    db.remove(doc, function (err, removedDoc) {
-    if (err) return cb(err)
-    cb(null, removedDoc)
-  })
-})
+function deletePatient(id, cb) {
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
+        db.remove(doc, function(err, removedDoc) {
+            if (err) return cb(err)
+            cb(null, removedDoc)
+        })
+    })
 }
 
 function getPatient(patientId, cb) {
-  db.get(patientId, function(err, patient) {
-      if (err) return cb(err)
-      cb(null, patient)
-  })
+    db.get(patientId, function(err, patient) {
+        if (err) return cb(err)
+        cb(null, patient)
+    })
 }
 
 
