@@ -1,13 +1,15 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy" //remember pharmacy for me
+const couch_dbname = "pharmacy-new" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
     uniq,
     prop,
-    omit
+    omit,
+    compose,
+    drop
 } = require('ramda')
 
 
@@ -20,10 +22,10 @@ function getMed(medId, cb) {
 }
 
 function getPatient(patientId, cb) {
-  db.get(patientId, function(err, patient) {
-      if (err) return cb(err)
-      cb(null, patient)
-  })
+    db.get(patientId, function(err, patient) {
+        if (err) return cb(err)
+        cb(null, patient)
+    })
 }
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
@@ -120,30 +122,44 @@ function listPharmaciesByStoreName(storeName, cb) {
 
 
 function deletePharmacy(id, cb) {
-  db.get (id, function (err, doc) {
-    if (err) return cb(err)
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
 
-    db.remove(doc, function (err, deletedPharmacy) {
-      if (err) return cb(err)
-      cb (null, deletedPharmacy)
+        db.remove(doc, function(err, deletedPharmacy) {
+            if (err) return cb(err)
+            cb(null, deletedPharmacy)
+        })
     })
-  })
 }
 
-function listPharmacies(cb) {
-    db.allDocs({
-            include_docs: true,
-            startkey: "pharmacy_",
-            endkey: "pharmacy_\uffff"
-        },
+var addSortToken = function(queryRow) {
+    queryRow.doc.startKey = queryRow.key;
+    return queryRow;
+}
+
+function listPharmacies(startKey, limit, cb) {
+    let options = {}
+    if (startKey) {
+        options.startkey = startKey
+    }
+    options.limit = limit ? limit + 1 : 10
+    options.include_docs = true
+
+    db.query("pharmacies", options,
         function(err, list) {
             if (err) return cb(err)
-            cb(null, map(x=>x.doc, list.rows))
+            const pagedDocs = compose(
+                drop(1),
+                map(x => x.doc),
+                map(addSortToken)
+            )(list.rows)
+            cb(null, pagedDocs)
         })
 }
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
+<<<<<<< HEAD
   var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
 
   newId = newId.replace(" ", "_")
@@ -177,7 +193,7 @@ function preppedNewPharmacy(doc) {
 ////////PATIENTS////////
 
 function addPatient(patient, cb7) {
-
+    patient.type = "patient"
     patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
     db.put(patient, function(err, res) {
         if (err) return cb7(err)
@@ -225,29 +241,29 @@ function getUniqueConditions(cb12) {
     })
 }
 
-function updatePatient (patient, cb) {
-  patient.type = "patient"
-  db.put(patient, function (err, res) {
-    if (err) return cb(err)
-    cb(null, res)
-  })
+function updatePatient(patient, cb) {
+    patient.type = "patient"
+    db.put(patient, function(err, res) {
+        if (err) return cb(err)
+        cb(null, res)
+    })
 }
 
-function deletePatient (id, cb) {
-  db.get(id, function (err, doc) {
-    if (err) return cb(err)
-    db.remove(doc, function (err, removedDoc) {
-    if (err) return cb(err)
-    cb(null, removedDoc)
-  })
-})
+function deletePatient(id, cb) {
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
+        db.remove(doc, function(err, removedDoc) {
+            if (err) return cb(err)
+            cb(null, removedDoc)
+        })
+    })
 }
 
 function getPatient(patientId, cb) {
-  db.get(patientId, function(err, patient) {
-      if (err) return cb(err)
-      cb(null, patient)
-  })
+    db.get(patientId, function(err, patient) {
+        if (err) return cb(err)
+        cb(null, patient)
+    })
 }
 
 
