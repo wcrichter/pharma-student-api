@@ -152,7 +152,7 @@ app.delete('/pharmacies/:id', function (req, res, next) {
     res.status(200).send(doc)
   })
 })
-    
+
 
 ///////////// error handler /////////////////////////////
 app.use(function(err, req, res, next) {
