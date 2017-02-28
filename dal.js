@@ -124,7 +124,6 @@ function listPharmaciesByStoreName(storeName, cb) {
 function deletePharmacy(id, cb) {
     db.get(id, function(err, doc) {
         if (err) return cb(err)
-
         db.remove(doc, function(err, deletedPharmacy) {
             if (err) return cb(err)
             cb(null, deletedPharmacy)
@@ -136,6 +135,7 @@ var addSortToken = function(queryRow) {
     queryRow.doc.startKey = queryRow.key;
     return queryRow;
 }
+
 
 function listPharmacies(startKey, limit, cb) {
     let options = {}
