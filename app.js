@@ -25,15 +25,17 @@ app.get('/medications', function(req, res, next) {
             res.status(200).send(meds)
         })
     } else if (!req.query.filter) {
-        listMedsByLabel(function(err, meds) {
+        const startkey = req.query.startkey ? req.query.startkey : undefined
+        const limit = req.query.limit ? req.query.limit : undefined
+        listMedsByLabel(startkey, limit, function(err, meds) {
+            console.log(startkey + " " + limit) //working...
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(meds)
-        })
+          })
     } else {
         res.status(200).send([])
     }
 })
-
 
 
 app.get('/medications/ingredients', function(req, res, next) {

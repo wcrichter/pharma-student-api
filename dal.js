@@ -30,12 +30,24 @@ function getPatient(patientId, cb) {
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
 
-function listMedsByLabel(cb) {
-    db.query('medsByLabel', {
-        include_docs: true
-    }, function(err, res) {
+function listMedsByLabel(startKey, limit, cb) {
+
+  let options = {}
+
+  if (startKey) {
+    options.startkey = startKey
+  }
+    options.limit = limit ? Number(limit) + 1 : 10
+    options.include_docs = true
+
+    db.query('medsByLabel', options, function(err, res) {
         if (err) return cb(err)
-        cb(null, map(returnDoc, res.rows))
+        const meds = compose (
+          drop(1),
+          map(x=>x.doc),
+          map(addSortToken)
+        )(res.rows)
+        cb(null, meds)
     })
 }
 
