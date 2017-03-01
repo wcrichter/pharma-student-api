@@ -286,7 +286,6 @@ Creates a pharmacy by providing a new pharmacy as JSON in the request body:
 
 Creates a patient by providing a new patient as JSON in the request body:
 
-
 <pre><code>$ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 0d5cbbeb-a77d-482c-e20b-fa18f159c52d" -d '{
     "patientNumber": 1001,
     "firstName": "Steve",
