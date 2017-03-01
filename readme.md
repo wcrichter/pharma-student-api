@@ -1,8 +1,60 @@
 # Pharmacy API
 
-## User Stores
+## API
 
-### User Story 1 - List Medications
+### view medication list
+
+#### `GET /medications`
+
+Returns a collection of medications default sorted by label.
+
+** Request Parameters **
+
+Parameter	Required	Type	Description
+
+- `filter`
+
+<table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Required</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>`filter`</td>
+          <td>false</td>
+          <td>string</td>
+          <td>Filters a collection of medications by specified ingredient or form, such as, (tablet, syrup, patch).
+          <ul>
+          <li>Filter By ingredient example:  `GET /medications?filter=ingredient:aspirin`.</li>
+          <li>Filter by form example: `GET /medications?filter=form:tablet`.</li>
+          </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>`filter`</td>
+          <td>false</td>
+          <td>string</td>
+          <td>string</td>
+        </tr>
+        <tr>
+          <td>`filter`</td>
+          <td>false</td>
+          <td>string</td>
+          <td>string</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+
+## Use Cases
+
+### List Medications
 
 As a doctor, I would like the ability to view a list of medications (alpha sort by label and sort by ingredient) and select a single medication so that I can view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
@@ -14,11 +66,11 @@ A medication contains the following information:
 - unit (string) Ex: "mg"
 - form (string) Ex: "tablet"
 
-### User Story 2 - List Ingredients and Filter Meds By Ingredients
+### List Ingredients and Filter Meds By Ingredients
 
 As a doctor, I would like the ability to view a unique list of ingredients used in all our medications. After selecting an ingredient from the list, provide a filtered list of medications that contain the selected ingredient.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
-### User Story 3 - List forms and filter meds by form
+### List forms and filter meds by form
 
 As a doctor, I would like the ability to view a unique list of medication forms (syrup, tablet, patch...) used in all our medications. After selecting an form from the list, provide a filtered list of medications that contain the selected form.  After selecting a single medication, I want to view the medication details, such as ingredients, amount, and form (such as liquid, tablet, patch, etc.).
 
@@ -136,7 +188,7 @@ As a medical assistant, I need the ability to maintain a list of pharmacies so t
 ### Database
 
 - search by chainName can utilize allDocs and primary id
-- (Stephen) create query to search by storeName 
+- (Stephen) create query to search by storeName
 
 ### DAL
 
@@ -235,14 +287,8 @@ Once, I have filled a particular medication within a prescription, I will update
 
 As a pharmacist of doctor, I would like the ability to view the patient details, pharmacy details, and medications (not details) for a given pers
 
+-----
 
-## API Resources/Endpoints
-
-### view medication list
-
-- (done)`GET /medications` - returns a collection of medications default sorted by label -  dal's listMedsByLabel()
-- (done)`GET /medications?filter=ingredient:aspirin` - filters a collection of medications by specified ingredient  `dal.listMedsByIngredient(ingredient, cb)`
-- (done)`GET /medications?filter=form:tablet`  - filters a collection of medications by form (tablet, syrup, patch) `dal.listMedsByForm(form, cb)`
 
 ### view medication ingredient list
 
