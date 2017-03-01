@@ -6,12 +6,13 @@
 
 - The pharmacy API depends on [CouchDB](http://couchdb.apache.org/) running on locally on http://127.0.0.1:5984/.  You can adjust the port number within **dal.js**, if necessary.
 
-0. Run the following terminal commands to clone the repo from GitHub, install the project dependencies and start the API on port 8080:
+0. Run the following terminal commands to clone the repo from GitHub, install the project dependencies, load the data into a database named `pharma-student` and start the API on port 8080:
 
     ```
     $ git clone https://github.com/jrs-innovation-center/pharma-student-api.git
     $ cd pharma-student-api
     $ npm install
+    $ node bulk-add.js
     $ npm start
     ```
 
@@ -19,6 +20,8 @@
 0. Next, view all the meds via a `GET` to  [http://localhost:8080/medications](http://localhost:8080/medications).
 0. Next, try a `GET` to [http://localhost:8080/pharmacies](http://localhost:8080/pharmacies).
 0. And a `GET` to [http://localhost:8080/patients](http://localhost:8080/patients).
+
+> Any errors will be logged to the console/terminal.
 
 # Medications
 
