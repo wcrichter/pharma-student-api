@@ -1,12 +1,24 @@
 # Pharmacy API
 
-## API
-
 ## Medications
 
 ## `GET /medications`
 
 Returns a collection of medications default sorted by label.  You may optionally filter the medications by ingredient or form, such as patch, tablet, syrup.
+
+**Request URL**
+
+```
+http://localhost:8080/medications
+```
+
+**Examples**
+
+Get medications that contain the ingredient Aspirin.
+
+```
+$ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
+```
 
 **Request Parameters**
 
@@ -93,6 +105,56 @@ Returned when the specified action is not found.
 ```
 Cannot GET /medicat?filter=ingredient:Aspirin
 ```
+
+## `POST /medications`
+
+Adds a medication the collection of medications.  
+
+**Request URL**
+
+```
+http://localhost:8080/medications
+```
+
+**Examples**
+
+Creates a medication by providing a new medication as JSON in the request body:
+
+```
+curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 19358612-77b7-0f09-8d08-2cd462cc463c" -d '{
+    "label": "Nyquil 1000 ml syrup",
+    "ingredients": [
+      "Ibuprofin"
+    ],
+    "amount": "1000",
+    "unit": "ml",
+    "form": "syrup",
+    "type": "medication"
+  }' "http://localhost:8080/medications"
+```
+
+**Response `201`**
+
+```
+{
+  "ok": true,
+  "id": "medication_nyquil_200 ml syrup_syrup",
+  "rev": "1-dc27efb54edd17daa58b52d30990d071"
+}
+```
+
+**Response `409`**
+
+```
+{
+  "name": "conflict",
+  "status": 409,
+  "message": "Document update conflict.",
+  "reason": "Document update conflict.",
+  "error": "conflict"
+}
+```
+
 
 ## Use Cases
 

@@ -28,6 +28,19 @@ function getPatient(patientId, cb) {
     })
 }
 
+
+function addMed(med, cb) {
+    med.type = "medication"
+    let newId = `medication_${med.label.toLowerCase()}_${med.form.toLowerCase()}`
+    newId = newId.replace(" ", "_")
+    med._id = newId
+
+    db.put(med, function(err, res) {
+        if (err) return cb(err)
+        cb(null, res)
+    })
+}
+
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
 
 function listMedsByLabel(cb) {
@@ -288,6 +301,8 @@ const dal = {
     listMedsByIngredient: listMedsByIngredient,
     listMedsByForm: listMedsByForm,
     getMed: getMed,
+    addMed: addMed,
+
     addPatient: addPatient,
     getPatients: getPatients,
     listPatientsByLastName: listPatientsByLastName,
