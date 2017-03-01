@@ -10,7 +10,7 @@ const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
 const cors = require('cors')
 
-//app.use(cors({credentials: true}))
+app.use(cors({credentials: true}))
 app.use(bodyParser.json())
 
 ///////////////////////
