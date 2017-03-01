@@ -2,11 +2,11 @@
 
 ## API
 
-### view medication list
+## Medications
 
-#### `GET /medications`
+## `GET /medications`
 
-Returns a collection of medications default sorted by label.
+Returns a collection of medications default sorted by label.  You may optionally filter the medications by ingredient or form, such as patch, tablet, syrup.
 
 **Request Parameters**
 
@@ -40,6 +40,59 @@ Returns a collection of medications default sorted by label.
       </tbody>
     </table>
 
+**Response `200`**
+
+```
+[
+    {
+        "_id": "medication_amlodipine_10mg_tablet",
+        "_rev": "3-f071655fdafe4bd3d8cbbc22b11dacd0",
+        "label": "Amlodipine 10mg tablet",
+        "ingredients": [
+            "Amlodipine",
+            "Aspirin"
+        ],
+        "amount": "10",
+        "unit": "mg",
+        "form": "tablet",
+        "type": "medication"
+    },
+    {
+        "_id": "medication_spironolactone_100mg_tablet",
+        "_rev": "3-01ca16f7eaede703edac68d60d6c0333",
+        "label": "Lisinopril 100mg tablet",
+        "ingredients": [
+            "spironolactone",
+            "tamezipam"
+        ],
+        "amount": "100",
+        "unit": "mg",
+        "form": "tablet",
+        "type": "medication"
+    },
+    {
+        "_id": "medication_lisinopril_20mg_tablet",
+        "_rev": "5-28bab875b5388b6e99627b347c88e668",
+        "label": "Lisinopril 20mg tablet",
+        "ingredients": [
+            "Lisinopril"
+        ],
+        "amount": "20",
+        "unit": "mg",
+        "form": "tablet",
+        "type": "medication"
+    },
+    ...
+]
+```
+
+**Response `404`**
+
+Returned when the specified action is not found.
+
+```
+Cannot GET /medicat?filter=ingredient:Aspirin
+```
 
 ## Use Cases
 
