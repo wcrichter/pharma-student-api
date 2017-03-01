@@ -8,11 +8,7 @@
 
 Returns a collection of medications default sorted by label.
 
-** Request Parameters **
-
-Parameter	Required	Type	Description
-
-- `filter`
+**Request Parameters**
 
 <table class="table table-striped table-hover">
       <thead>
