@@ -33,7 +33,7 @@ function getPatient(patientId, cb) {
 
 function addMed(med, cb) {
     med.type = "medication"
-    let newId = `medication_${med.label.toLowerCase()}`
+    let newId = "medication_" + med.label.toLowerCase()
     med._id = prepID(newId)
 
     db.put(med, function(err, res) {
