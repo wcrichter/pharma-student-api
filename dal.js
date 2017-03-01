@@ -13,6 +13,9 @@ const {
 } = require('ramda')
 
 
+/////////////////////
+//   medications
+/////////////////////
 
 function getMed(medId, cb) {
     db.get(medId, function(err, doc) {
@@ -25,6 +28,17 @@ function getPatient(patientId, cb) {
     db.get(patientId, function(err, patient) {
         if (err) return cb(err)
         cb(null, patient)
+    })
+}
+
+function addMed(med, cb) {
+    med.type = "medication"
+    let newId = `medication_${med.label.toLowerCase()}`
+    med._id = prepID(newId)
+
+    db.put(med, function(err, res) {
+        if (err) return cb(err)
+        cb(null, res)
     })
 }
 
@@ -74,10 +88,16 @@ function getUniqueForms(cb) {
     })
 }
 
-const returnDoc = row => row.doc
 
 
-/////////////// Pharmacy functions /////////////////////
+
+
+
+
+/////////////////////
+//    pharmacy
+/////////////////////
+
 function addPharmacy(doc, cb) {
     checkRequiredInputs(doc) ?
         db.put(preppedNewPharmacy(doc), function(err, addedPharmacy) {
@@ -126,7 +146,6 @@ function listPharmaciesByStoreName(storeName, cb) {
     })
 }
 
-
 function deletePharmacy(id, cb) {
     db.get(id, function(err, doc) {
         if (err) return cb(err)
@@ -136,11 +155,6 @@ function deletePharmacy(id, cb) {
             cb(null, deletedPharmacy)
         })
     })
-}
-
-var addSortToken = function(queryRow) {
-    queryRow.doc.startKey = queryRow.key;
-    return queryRow;
 }
 
 function listPharmacies(startKey, limit, cb) {
@@ -163,47 +177,27 @@ function listPharmacies(startKey, limit, cb) {
         })
 }
 
-/////////////////// helper functions //////////////////////////
-function preppedNewPharmacy(doc) {
-    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
-    doc._id = newID.replace(" ", "_")
-    doc.type = "pharmacy"
-
-    return doc
-}
-
-
-// function listMedsByForm(form, cb5) {
-//     db.query('medsByForm', {
-//         include_docs: true,
-//         keys: [form]
-//     }, function(err, res) {
-//         if (err) return cb5(err)
-//         cb5(null, map(returnDoc, res.rows))
-//     })
-// }
-
-
-// function getUniqueForms(cb6) {
-//     db.query('medsByForm', null, function(err, res) {
-//         if (err) return cb6(err)
-//         cb6(null, uniq(map(row => row.key, res.rows)))
-//     })
-// }
 
 
 
-////////PATIENTS////////
+
+
+
+
+/////////////////////
+//    patients
+/////////////////////
 
 function addPatient(patient, cb7) {
     patient.type = "patient"
-    patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
+    let newId = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
+    patient._id = prepID(newId)
+
     db.put(patient, function(err, res) {
         if (err) return cb7(err)
         cb7(null, res)
     })
 }
-
 
 function getPatients(cb8) {
     db.allDocs({
@@ -215,7 +209,6 @@ function getPatients(cb8) {
         cb8(null, (map(obj => omit("type", obj.doc), res.rows)))
     })
 }
-
 
 function listPatientsByLastName(lastName, cb9) {
     db.query('patientsByLastName', {
@@ -270,9 +263,37 @@ function getPatient(patientId, cb) {
 }
 
 
+
+
+
+
+
+
+///////////////////////
+// helper functions
+///////////////////////
+
+function prepID(id) {
+  return id.replace(/ /g, "_")
+}
+
+var addSortToken = function(queryRow) {
+    queryRow.doc.startKey = queryRow.key;
+    return queryRow;
+}
+
 function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
 }
+
+function preppedNewPharmacy(doc) {
+    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
+    doc._id = prepID(newID)
+    doc.type = "pharmacy"
+    return doc
+}
+
+const returnDoc = row => row.doc
 
 
 const dal = {
@@ -288,6 +309,8 @@ const dal = {
     listMedsByIngredient: listMedsByIngredient,
     listMedsByForm: listMedsByForm,
     getMed: getMed,
+    addMed: addMed,
+
     addPatient: addPatient,
     getPatients: getPatients,
     listPatientsByLastName: listPatientsByLastName,
