@@ -113,6 +113,28 @@ Return a medication for a given medication id.
 http://localhost:8080/medications/{medicationId}
 ```
 
+**Request Parameters**
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Required</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>medicationId</td>
+      <td>true</td>
+      <td>string</td>
+      <td>Unique identifier for a medication.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 **Examples**
 
 Get a medication
@@ -120,29 +142,6 @@ Get a medication
 ```
 $ curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 4c096411-c83d-98b5-dcf3-1bab3a02363b" "http://localhost:8080/medications/medication_nyquil_200%20ml%20syrup_syrup"
 ```
-
-**Request Parameters**
-
-<table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>Parameter</th>
-          <th>Required</th>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>medicationId</td>
-          <td>true</td>
-          <td>string</td>
-          <td>Unique identifier for a medication.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
 
 **Response `200`**
 
@@ -171,6 +170,50 @@ Adds a medication the collection of medications.
 http://localhost:8080/medications
 ```
 
+**Request Body**
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>label</td>
+      <td>true</td>
+      <td>string</td>
+      <td>medication label including med name, amount, unit, and form.
+      </td>
+    </tr>
+    <tr>
+      <td>ingredients</td>
+      <td>true</td>
+      <td>array</td>
+      <td>An array of strings. Each item in the array is the name of an ingredient.  
+      </td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>true</td>
+      <td>string</td>
+      <td>The medication amount.
+      </td>
+    </tr>
+    <tr>
+      <td>form</td>
+      <td>true</td>
+      <td>string</td>
+      <td>The form of the medication such as tablet, syrup, patch.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
 **Examples**
 
 Creates a medication by providing a new medication as JSON in the request body:
@@ -184,12 +227,13 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
     ],
     "amount": "200",
     "unit": "mg",
-    "form": "syrup",
-    "type": "medication"
+    "form": "syrup"
   }' "http://localhost:8080/medications"
 ```
 
 **Response `201`**
+
+Returned when the operation successfully creates a medication. The response body contains the id of the new medication.
 
 ```
 {
@@ -200,6 +244,8 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 ```
 
 **Response `409`**
+
+Returned when an attempt is made to create a duplicate medication.
 
 ```
 {
