@@ -50,9 +50,6 @@ $ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
 
 A successful response will include an array of medications.  
 
-
-
-
 ```[
     {
         "_id": "medication_amlodipine_10mg_tablet",
@@ -94,8 +91,7 @@ A successful response will include an array of medications.
     },
 
 ]
-
-```
+```  
 
 **Response `404`**
 
