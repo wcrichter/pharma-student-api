@@ -24,13 +24,6 @@ function getMed(medId, cb) {
     })
 }
 
-function getPatient(patientId, cb) {
-    db.get(patientId, function(err, patient) {
-        if (err) return cb(err)
-        cb(null, patient)
-    })
-}
-
 function addMed(med, cb) {
     med.type = "medication"
     let newId = "medication_" + med.label.toLowerCase()
@@ -39,6 +32,24 @@ function addMed(med, cb) {
     db.put(med, function(err, res) {
         if (err) return cb(err)
         cb(null, res)
+    })
+}
+
+function updateMed(med, cb) {
+    db.put(med, function(err, doc) {
+        if (err) return cb(err)
+        cb(null, doc)
+    })
+}
+
+function deleteMed(id, cb) {
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
+
+        db.remove(doc, function(err, deletedMed) {
+            if (err) return cb(err)
+            cb(null, deletedMed)
+        })
     })
 }
 
@@ -112,10 +123,10 @@ function addPharmacy(doc, cb) {
         })
 }
 
-function updatePharmacy(pharmacy, callMeMaybe) {
+function updatePharmacy(pharmacy, cb) {
     db.put(pharmacy, function(err, doc) {
-        if (err) return callMeMaybe(err)
-        callMeMaybe(null, doc)
+        if (err) return cb(err)
+        cb(null, doc)
     })
 }
 
@@ -310,7 +321,8 @@ const dal = {
     listMedsByForm: listMedsByForm,
     getMed: getMed,
     addMed: addMed,
-
+    updateMed: updateMed,
+    deleteMed: deleteMed,
     addPatient: addPatient,
     getPatients: getPatients,
     listPatientsByLastName: listPatientsByLastName,
