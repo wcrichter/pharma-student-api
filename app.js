@@ -3,7 +3,7 @@ const app = express()
 const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
         listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
         addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
-        updatePatient, deletePatient, getPatient, addMed, updateMed} = require('./dal.js')
+        updatePatient, deletePatient, getPatient, addMed, updateMed, deleteMed} = require('./dal.js')
 const { split } = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
