@@ -46,7 +46,9 @@ $ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
       </tbody>
     </table>
 
-**Response `200`**
+**Response 200**
+
+A successful response will include an array of medications. 
 
 ```
 [
