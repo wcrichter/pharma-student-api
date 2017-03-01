@@ -3,7 +3,7 @@ const app = express()
 const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
         listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
         addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
-        updatePatient, deletePatient, getPatient, addMed} = require('./dal.js')
+        updatePatient, deletePatient, getPatient, addMed, updateMed} = require('./dal.js')
 const { split } = require('ramda')
 const bodyParser = require('body-parser')
 const HTTPError = require('node-http-error')
@@ -48,7 +48,6 @@ app.post('/medications', function(req, res, next) {
 })
 
 app.put('/medications/:id', function (req, res, next) {
-  console.log(req.body)
   updateMed(req.body, function (err, dalResponse) {
     if (err) return next(new HTTPError(err.status, err.messsge, err))
     res.status(200).send(dalResponse)
@@ -91,7 +90,6 @@ app.get('/medications/forms', function(req, res, next) {
 //////////////////////
 
 app.post('/patients', function(req, res, next) {
-    console.log(req.body)
     addPatient(req.body, function(err, dalResponse) {
         if (err) return next(new HTTPError(err.status, err.message, err))
         res.status(201).send(dalResponse)
@@ -132,7 +130,6 @@ app.get('/patients/conditions', function(req, res, next) {
 })
 
 app.put('/patients/:id', function (req, res, next) {
-  console.log(req.body)
   updatePatient(req.body, function (err, dalResponse) {
     if (err) return next(new HTTPError(err.status, err.messsge, err))
     res.status(200).send(dalResponse)
