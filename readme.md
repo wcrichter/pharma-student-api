@@ -4,7 +4,7 @@
 
 ## `GET /medications`
 
-Returns a collection of medications default sorted by label.  You may optionally filter the medications by ingredient or form, such as patch, tablet, syrup.
+Returns a collection of medications default sorted by label.  You may optionally filter the medications by ingredient or form, such as patch, tablet, syrup. Attempting any other filter will result in an `200` response code with an empty array returned.
 
 **Request URL**
 
@@ -20,7 +20,7 @@ Get medications that contain the ingredient Aspirin.
 $ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
 ```
 
-**Request Parameters**
+**Query Parameters**
 
 <table class="table table-striped table-hover">
       <thead>
@@ -42,12 +42,6 @@ $ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
           <li>Filter by form example: GET /medications?filter=form:tablet.</li>
           </ul>
           </td>
-        </tr>
-        <tr>
-          <td>`filter`</td>
-          <td>false</td>
-          <td>string</td>
-          <td>string</td>
         </tr>
       </tbody>
     </table>
@@ -106,6 +100,67 @@ Returned when the specified action is not found.
 Cannot GET /medicat?filter=ingredient:Aspirin
 ```
 
+
+
+
+## `GET /medications/{medicationId}`
+
+Return a medication for a given medication id.
+
+**Request URL**
+
+```
+http://localhost:8080/medications/{medicationId}
+```
+
+**Examples**
+
+Get a medication
+
+```
+$ curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 4c096411-c83d-98b5-dcf3-1bab3a02363b" "http://localhost:8080/medications/medication_nyquil_200%20ml%20syrup_syrup"
+```
+
+**Request Parameters**
+
+<table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Required</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>medicationId</td>
+          <td>true</td>
+          <td>string</td>
+          <td>Unique identifier for a medication.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+**Response `200`**
+
+```
+{
+    "_id": "medication_nyquil_200 ml syrup_syrup",
+    "_rev": "1-dc27efb54edd17daa58b52d30990d071",
+    "label": "Nyquil 200 ml syrup",
+    "ingredients": [
+        "Ibuprofin"
+    ],
+    "amount": "200",
+    "unit": "ml",
+    "form": "syrup",
+    "type": "medication"
+}
+```
+
 ## `POST /medications`
 
 Adds a medication the collection of medications.  
@@ -121,13 +176,14 @@ http://localhost:8080/medications
 Creates a medication by providing a new medication as JSON in the request body:
 
 ```
-curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 19358612-77b7-0f09-8d08-2cd462cc463c" -d '{
-    "label": "Nyquil 1000 ml syrup",
+curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 62e6431c-c7e5-b197-c12b-394f4d73d27e" -d '{
+    "label": "Amlodipine 200mg syrup",
     "ingredients": [
-      "Ibuprofin"
+      "Amlodipine",
+      "Aspirin"
     ],
-    "amount": "1000",
-    "unit": "ml",
+    "amount": "200",
+    "unit": "mg",
     "form": "syrup",
     "type": "medication"
   }' "http://localhost:8080/medications"
@@ -138,8 +194,8 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 ```
 {
   "ok": true,
-  "id": "medication_nyquil_200 ml syrup_syrup",
-  "rev": "1-dc27efb54edd17daa58b52d30990d071"
+  "id": "medication_amlodipine_200mg_syrup",
+  "rev": "1-4efe163301bb197b58f837b931558f9d"
 }
 ```
 
@@ -155,6 +211,71 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 }
 ```
 
+
+
+## `POST /pharmacies`
+
+**Examples**
+
+Creates a pharmacy by providing a new pharmacy as JSON in the request body:
+
+```
+curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 484fbe93-d990-428d-8942-ba247b4ce09d" -d '{
+    "type": "pharmacy",
+    "storeNumber": "1004",
+    "storeChainName": "Walgreens",
+    "storeName": "Hwy 17 S. Myrtle Beach",
+    "streetAddress": "250 South Myrtle Beach Market Road",
+    "phone": "843-777-1111",
+    "city": "Myrtle Beach",
+    "state": "SC",
+    "zip": "29345"
+  }' "http://localhost:8080/pharmacies"
+```
+
+**Response `201`**
+
+```
+{
+  "ok": true,
+  "id": "pharmacy_Walgreens_Hwy_17_S._Myrtle_Beach_1004",
+  "rev": "1-303c4dd05db46df6680146b971113328"
+}
+```
+
+## `POST /patients`
+
+
+**Examples**
+
+Creates a patient by providing a new patient as JSON in the request body:
+
+```
+$ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 0d5cbbeb-a77d-482c-e20b-fa18f159c52d" -d '{
+    "patientNumber": 1001,
+    "firstName": "Steve",
+    "lastName": "Austin",
+    "birthdate": "1940-09-01",
+    "gender": "M",
+    "ethnicity": "W",
+    "last4SSN": 3033,
+    "conditions": [
+      "Depression",
+      "Hypertension"
+    ]
+  }' "http://localhost:8080/patients"
+
+```
+
+**Response `201`**
+
+```
+{
+  "ok": true,
+  "id": "patient_austin_steve_3033_1001",
+  "rev": "1-252282dad5d90055fdd2ff1667d5f666"
+}
+```
 
 ## Use Cases
 
