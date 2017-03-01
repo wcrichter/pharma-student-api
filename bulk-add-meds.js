@@ -1,6 +1,6 @@
 const PouchDB = require('pouchdb-http')
-const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy-delete" //remember pharmacy for me
+const couch_base_uri = "http://127.0.0.1:5984/"
+const couch_dbname = "pharmacy-student" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 
 
