@@ -25,13 +25,13 @@ Parameter	Required	Type	Description
       </thead>
       <tbody>
         <tr>
-          <td>`filter`</td>
+          <td>filter</td>
           <td>false</td>
           <td>string</td>
           <td>Filters a collection of medications by specified ingredient or form, such as, (tablet, syrup, patch).
           <ul>
-          <li>Filter By ingredient example:  `GET /medications?filter=ingredient:aspirin`.</li>
-          <li>Filter by form example: `GET /medications?filter=form:tablet`.</li>
+          <li>Filter By ingredient example:  GET /medications?filter=ingredient:aspirin.</li>
+          <li>Filter by form example: GET /medications?filter=form:tablet.</li>
           </ul>
           </td>
         </tr>
@@ -41,13 +41,6 @@ Parameter	Required	Type	Description
           <td>string</td>
           <td>string</td>
         </tr>
-        <tr>
-          <td>`filter`</td>
-          <td>false</td>
-          <td>string</td>
-          <td>string</td>
-        </tr>
-
       </tbody>
     </table>
 
