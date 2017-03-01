@@ -1,6 +1,6 @@
 # Pharmacy API
 
-## Medications
+# Medications
 
 ## `GET /medications`
 
@@ -50,8 +50,7 @@ $ curl -X GET http://localhost:8080/medications?filter=ingredient:Aspirin
 
 A successful response will include an array of medications.  
 
-<pre><code>
-[
+<pre><code>[
     {
         "_id": "medication_amlodipine_10mg_tablet",
         "_rev": "3-f071655fdafe4bd3d8cbbc22b11dacd0",
@@ -90,18 +89,14 @@ A successful response will include an array of medications.
         "form": "tablet",
         "type": "medication"
     }
-]
-</code>
+]</code>
 </pre>
 
 **Response `404`**
 
 Returned when the specified action is not found.
 
-<pre><code>
-Cannot GET /medicat?filter=ingredient:Aspirin
-</code></pre>
-
+<pre><code>Cannot GET /medicat?filter=ingredient:Aspirin</code></pre>
 
 
 ## `GET /medications/{medicationId}`
@@ -110,9 +105,7 @@ Return a medication for a given medication id.
 
 **Request URL**
 
-<pre><code>
-http://localhost:8080/medications/{medicationId}
-</code></pre>
+<pre><code>http://localhost:8080/medications/{medicationId}</code></pre>
 
 **Request Parameters**
 
@@ -141,15 +134,12 @@ http://localhost:8080/medications/{medicationId}
 Get a medication
 
 
-<pre><code>
-$ curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 4c096411-c83d-98b5-dcf3-1bab3a02363b" "http://localhost:8080/medications/medication_nyquil_200%20ml%20syrup_syrup"
-</code></pre>
+<pre><code>$ curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 4c096411-c83d-98b5-dcf3-1bab3a02363b" "http://localhost:8080/medications/medication_nyquil_200%20ml%20syrup_syrup"</code></pre>
 
 
 **Response `200`**
 
-<pre><code>
-{
+<pre><code>{
     "_id": "medication_nyquil_200 ml syrup_syrup",
     "_rev": "1-dc27efb54edd17daa58b52d30990d071",
     "label": "Nyquil 200 ml syrup",
@@ -160,8 +150,7 @@ $ curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" -
     "unit": "ml",
     "form": "syrup",
     "type": "medication"
-}
-</code></pre>
+}</code></pre>
 
 
 ## `POST /medications`
@@ -170,10 +159,7 @@ Adds a medication the collection of medications.
 
 **Request URL**
 
-<pre><code>
-http://localhost:8080/medications
-</code></pre>
-
+<pre><code>http://localhost:8080/medications</code></pre>
 
 **Request Body**
 
@@ -223,8 +209,7 @@ http://localhost:8080/medications
 
 Creates a medication by providing a new medication as JSON in the request body:
 
-<pre><code>
-curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 62e6431c-c7e5-b197-c12b-394f4d73d27e" -d '{
+<pre><code>curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 62e6431c-c7e5-b197-c12b-394f4d73d27e" -d '{
     "label": "Amlodipine 200mg syrup",
     "ingredients": [
       "Amlodipine",
@@ -233,21 +218,18 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
     "amount": "200",
     "unit": "mg",
     "form": "syrup"
-  }' "http://localhost:8080/medications"
-</code></pre>
+  }' "http://localhost:8080/medications"</code></pre>
 
 **Response `201`**
 
 Returned when the operation successfully creates a medication. The response body contains the id of the new medication.
 
 
-<pre><code>
-{
+<pre><code>{
   "ok": true,
   "id": "medication_amlodipine_200mg_syrup",
   "rev": "1-4efe163301bb197b58f837b931558f9d"
-}
-</code></pre>
+}</code></pre>
 
 
 **Response `409`**
@@ -265,7 +247,7 @@ Returned when an attempt is made to create a duplicate medication.
 </code></pre>
 
 
-
+# Pharmacies
 
 ## `POST /pharmacies`
 
@@ -273,8 +255,7 @@ Returned when an attempt is made to create a duplicate medication.
 
 Creates a pharmacy by providing a new pharmacy as JSON in the request body:
 
-<pre><code>
-curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 484fbe93-d990-428d-8942-ba247b4ce09d" -d '{
+<pre><code>curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 484fbe93-d990-428d-8942-ba247b4ce09d" -d '{
     "type": "pharmacy",
     "storeNumber": "1004",
     "storeChainName": "Walgreens",
@@ -284,8 +265,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
     "city": "Myrtle Beach",
     "state": "SC",
     "zip": "29345"
-  }' "http://localhost:8080/pharmacies"
-</code></pre>
+  }' "http://localhost:8080/pharmacies"</code></pre>
 
 **Response `201`**
 
@@ -298,7 +278,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 }
 </code></pre>
 
-
+# patients
 
 ## `POST /patients`
 
@@ -307,8 +287,7 @@ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H
 Creates a patient by providing a new patient as JSON in the request body:
 
 
-<pre><code>
-$ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 0d5cbbeb-a77d-482c-e20b-fa18f159c52d" -d '{
+<pre><code>$ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 0d5cbbeb-a77d-482c-e20b-fa18f159c52d" -d '{
     "patientNumber": 1001,
     "firstName": "Steve",
     "lastName": "Austin",
@@ -320,17 +299,13 @@ $ curl -X POST -H "Content-Type: application/json" -H "Cache-Control: no-cache" 
       "Depression",
       "Hypertension"
     ]
-  }' "http://localhost:8080/patients"
-</code></pre>
-
+  }' "http://localhost:8080/patients"</code></pre>
 
 
 **Response `201`**
 
-<pre><code>
-{
+<pre><code>{
   "ok": true,
   "id": "patient_austin_steve_3033_1001",
   "rev": "1-252282dad5d90055fdd2ff1667d5f666"
-}
-</code></pre>
+}</code></pre>
