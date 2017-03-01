@@ -278,7 +278,7 @@ Creates a pharmacy by providing a new pharmacy as JSON in the request body:
 }
 </code></pre>
 
-# patients
+# Patients
 
 ## `POST /patients`
 
