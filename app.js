@@ -201,7 +201,10 @@ app.delete('/pharmacies/:id', function (req, res, next) {
   })
 })
 
-
+app.get('/', function (req, res) {
+  res.send('Welcome to the Phara Student API!')
+  res.send('try ')
+})
 
 
 
