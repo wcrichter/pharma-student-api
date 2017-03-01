@@ -1,5 +1,26 @@
 # Pharmacy API
 
+## Getting Started
+
+> The pharmacy API depends on [CouchDB](http://couchdb.apache.org/) running on locally on http://127.0.0.1:5984/.  You can adjust the port number within **dal.js** and **bulk-add.js**, if necessary.
+
+0. Run the following terminal commands to clone the repo from GitHub, install the project dependencies, load the data into a database named `pharma-student` and start the API on port 8080:
+
+    ```
+    $ git clone https://github.com/jrs-innovation-center/pharma-student-api.git
+    $ cd pharma-student-api
+    $ npm install
+    $ node bulk-add.js
+    $ npm start
+    ```
+
+0. Open your browser to [http://localhost:8080/](http://localhost:8080/) to test the API.
+0. Next, view all the meds via a `GET` to  [http://localhost:8080/medications](http://localhost:8080/medications).
+0. Next, try a `GET` to [http://localhost:8080/pharmacies](http://localhost:8080/pharmacies).
+0. And a `GET` to [http://localhost:8080/patients](http://localhost:8080/patients).
+
+> Any errors will be logged to the console/terminal.
+
 # Medications
 
 ## `GET /medications`
@@ -284,7 +305,6 @@ Updates a medication for a given medication id.
 
 Update a medication
 
-
 <pre><code>$ curl -X PUT -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 7e7ee860-e153-7269-4117-9d5693e96cc4" -d '{
   "_id": "medication_spironolactone_100mg_patch",
   "_rev": "1-5ff9124953b429fc04080f38fbffaa18",
@@ -298,7 +318,6 @@ Update a medication
   "form": "patch",
   "type": "medication"
 }' "http://localhost:8080/medications/medication_spironolactone_100mg_patch"</code></pre>
-
 
 **Response `200`**
 
@@ -323,7 +342,62 @@ Returned when an attempt is made to update a medication with an old revision num
 
 
 
+## `DELETE /medications/{medicationId}`
 
+Deletes a medication for a given medication id.
+
+**Request URL**
+
+<pre><code>http://localhost:8080/medications/{medicationId}</code></pre>
+
+**Request Parameters**
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Required</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>medicationId</td>
+      <td>true</td>
+      <td>string</td>
+      <td>Unique identifier for a medication.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+**Examples**
+
+Deletes a medication
+
+<pre><code>$ curl -X DELETE -H "Content-Type: application/json" -H "Cache-Control: no-cache" -H "Postman-Token: 3b2f8365-26a8-7c67-424d-5eb09bbc9065" -d '' "http://localhost:8080/medications/medication_spironolactone_200mg_syrup"</code></pre>
+
+**Response `200`**
+
+<pre><code>{
+  "ok": true,
+  "id": "medication_spironolactone_200mg_syrup",
+  "rev": "2-7b7aa943e265b55dc6776e977d890542"
+}</code></pre>
+
+
+**Response `404`**
+
+Returned when an attempt is made to delete a medication with a bad or missing `medicationId` request parameter or when a medication has already been deleted.
+
+<pre><code>{
+  "name": "not_found",
+  "status": 404,
+  "message": "deleted",
+  "reason": "deleted",
+  "error": "not_found"
+}</code></pre>
 
 
 
