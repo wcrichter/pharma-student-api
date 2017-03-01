@@ -64,7 +64,7 @@ app.post('/patients', function(req, res, next) {
     console.log(req.body)
     addPatient(req.body, function(err, dalResponse) {
         if (err) return next(new HTTPError(err.status, err.message, err))
-        res.send(dalResponse)
+        res.status(201).send(dalResponse)
     })
 })
 
@@ -103,21 +103,21 @@ app.put('/patients/:id', function (req, res, next) {
   console.log(req.body)
   updatePatient(req.body, function (err, dalResponse) {
     if (err) return next(new HTTPError(err.status, err.messsge, err))
-    res.send(dalResponse)
+    res.status(200).send(dalResponse)
   })
 })
 
 app.get('/patients/:id', function (req, res, next) {
   getPatient(req.params.id, function (err, resp) {
     if (err) return next(new HTTPError(err.status, err.message, err))
-    res.send(resp)
+    res.status(200).send(resp)
   })
 })
 
 app.delete('/patients/:id', function (req, res, next) {
   deletePatient(req.params.id, function (err, person) {
     if (err) return next(new HTTPError(err.status, err.message, err))
-    res.send(person)
+    res.status(200).send(person)
 
   })
 })
@@ -127,7 +127,7 @@ app.delete('/patients/:id', function (req, res, next) {
 app.put('/pharmacies/:id', function(req, res, next) {
   updatePharmacy(req.body, function(err, pharmacy) {
     if (err) return next(new HTTPError(err.status, err.message, err))
-    res.status(201).send(pharmacy)
+    res.status(200).send(pharmacy)
   })
 })
 
@@ -173,5 +173,5 @@ app.use(function(err, req, res, next) {
 })
 
 app.listen(port, function() {
-    console.log("I'm listening on port ", port)
+    console.log("API is up and running on port ", port)
 })
