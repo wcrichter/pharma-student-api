@@ -5,11 +5,17 @@ const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredi
         addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
         updatePatient, deletePatient, getPatient} = require('./dal.js')
 const { split } = require('ramda')
+
 const bodyParser = require('body-parser')
+const cors = require('cors')
+
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
 
+app.use(cors({credentials: true}))
 app.use(bodyParser.json())
+
+
 
 app.get('/medications', function(req, res, next) {
     if (req.query.filter && split(':', req.query.filter)[0].toLowerCase() === 'ingredient') {

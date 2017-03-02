@@ -33,12 +33,14 @@ function getPatient(patientId, cb) {
 function listMedsByLabel(startKey, limit, cb) {
 
   let options = {}
+  options.include_docs = true
 
   if (startKey) {
-    options.startkey = startKey
-  }
+    options.start_key = startKey
     options.limit = limit ? Number(limit) + 1 : 10
-    options.include_docs = true
+  }  else {
+    options.limit = limit ? Number(limit) : 10
+  }
 
     db.query('medsByLabel', options, function(err, res) {
         if (err) return cb(err)
