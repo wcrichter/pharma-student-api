@@ -1,6 +1,6 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
-const couch_base_uri = "http://127.0.0.1:3000/" //3000 for most of us
+const couch_base_uri = "http://127.0.0.1:5984/" //3000 for most of us...otherwise 5984
 const couch_dbname = "pharma-student" //remember pharmacy for me pharma-student
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
@@ -149,29 +149,22 @@ function getPharmacy(id, cb) {
 }
 
 function listPharmaciesByChainName(chain, cb) {
-    db.query('pharmaciesByChainName', {
-        include_docs: true,
-        keys: [chain]
-    }, function(err, chain) {
-        if (err) return cb(err)
-        cb(chain)
-    })
+  db.query('pharmaciesByChainName', {include_docs: true, keys: [chain]}, function(err, chain) {
+    if (err) return cb(err)
+    cb(null, chain.rows)
+  })
 }
 
 function listPharmaciesByStoreName(storeName, cb) {
-    db.query('pharmacyByStoreName', {
-        include_docs: true,
-        keys: [storeName]
-    }, function(err, store) {
-        if (err) return cb(err)
-        cb(null, store)
-    })
+  db.query('pharmacyByStoreName', {include_docs: true, keys: [storeName]}, function(err, store) {
+    if (err) return cb(err)
+    cb(null, store.rows)
+  })
 }
 
 function deletePharmacy(id, cb) {
     db.get(id, function(err, doc) {
         if (err) return cb(err)
-
         db.remove(doc, function(err, deletedPharmacy) {
             if (err) return cb(err)
             cb(null, deletedPharmacy)
@@ -179,29 +172,56 @@ function deletePharmacy(id, cb) {
     })
 }
 
+
+
+
+// DONE: Move from allDocs() to to a couchdb query/view
+// DONE: Add a sort token / start key
+// DONE: Use Ramda's compose() to addSortToken before returning an array of docs
+// DONE: Add a startKey (sortToken) and limit params to the dal function.
+// DONE: Build a flexible options object that includes the startkey, limit, and include_docs
+// DONE:  Add to the limit and alter the compose to ramda drop(1)
+
+
 function listPharmacies(startKey, limit, cb) {
-    let options = {}
+
+    const options = {include_docs: true}
+    let shouldWeDrop = false
+
     if (startKey) {
-        options.startkey = startKey
+      options.start_key = startKey
+      options.limit = limit ? Number(limit) + 1 : 25
+      shouldWeDrop = true
+    } else {
+      options.limit = limit ? limit : 25
     }
-    options.limit = limit ? limit + 1 : 10
-    options.include_docs = true
 
     db.query("pharmacies", options,
         function(err, list) {
             if (err) return cb(err)
-            const pagedDocs = compose(
-                drop(1),
-                map(x => x.doc),
-                map(addSortToken)
+
+            var mappedQueryResults = shouldWeDrop ? compose(
+              drop(1),
+              map(returnDoc),
+              map(addSortToken)
+            )(list.rows) : compose(
+              map(returnDoc),
+              map(addSortToken)
             )(list.rows)
-            cb(null, pagedDocs)
+
+            cb(null, mappedQueryResults)
         })
 }
 
 
-
-
+/////////////////// helper functions //////////////////////////
+function preppedNewPharmacy(doc) {
+  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
+  newId = newId.replace(" ", "_")
+    doc._id = newId
+    doc.type = "pharmacy"
+    return doc
+}
 
 
 
@@ -295,6 +315,14 @@ function getPatient(patientId, cb) {
 // helper functions
 ///////////////////////
 
+function preppedNewPharmacy(doc) {
+  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
+  newId = newId.replace(" ", "_")
+    doc._id = newId
+    doc.type = "pharmacy"
+    return doc
+}
+
 function prepID(id) {
   return id.replace(/ /g, "_")
 }
@@ -308,13 +336,6 @@ function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
 }
 
-function preppedNewPharmacy(doc) {
-    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
-    doc._id = prepID(newID)
-    doc.type = "pharmacy"
-    return doc
-}
-
 const returnDoc = row => row.doc
 
 
@@ -324,6 +345,8 @@ const dal = {
     getPharmacy: getPharmacy,
     listPharmacies: listPharmacies,
     deletePharmacy: deletePharmacy,
+    listPharmaciesByChainName: listPharmaciesByChainName,
+    listPharmaciesByStoreName: listPharmaciesByStoreName,
     getUniqueForms: getUniqueForms,
     getUniqueConditions: getUniqueConditions,
     listMedsByLabel: listMedsByLabel,
