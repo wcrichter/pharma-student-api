@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy-new" //remember pharmacy for me
+const couch_dbname = "pharmacy" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
@@ -136,30 +136,81 @@ var addSortToken = function(queryRow) {
     return queryRow;
 }
 
+// DONE: Move from allDocs() to to a couchdb query/view
+// DONE: Add a sort token / start key
+// DONE: Use Ramda's compose() to addSortToken before returning an array of docs
+// DONE: Add a startKey (sortToken) and limit params to the dal function.
+// DONE: Build a flexible options object that includes the startkey, limit, and include_docs
+// DONE:  Add to the limit and alter the compose to ramda drop(1)
 
-function listPharmacies(startKey, limit, cb) {
-    let options = {}
-    if (startKey) {
-        options.startkey = startKey
-    }
-    options.limit = limit ? limit + 1 : 10
-    options.include_docs = true
+// function pageOptions(startKey, limit) {
+//
+//   const options = {include_docs: true}
+//
+//   if (startKey) {
+//     options.stark_key = startKey
+//     options.limit = limit ? Number(limit) + 1 : 25
+//     // shouldWeDrop = true
+//   } else {
+//     options.limit = limit ? limit : 25
+//   }
+//
+//   return options
+// }
 
-    db.query("pharmacies", options,
-        function(err, list) {
-            if (err) return cb(err)
-            const pagedDocs = compose(
-                drop(1),
-                map(x => x.doc),
-                map(addSortToken)
-            )(list.rows)
-            cb(null, pagedDocs)
-        })
-}
+// function composer(startKey){
+//
+//   const composedOptions
+//
+//   if (startKey) {
+//     compose(
+//       drop(1),
+//       map(returnDoc),
+//       map(addSortToken)
+//     )(list.rows)
+//   } else {
+//     compose(
+//       map(returnDoc),
+//       map(addSortToken)
+//     )(list.rows)
+//   }
+//
+//
+// }
+
+// function listPharmacies(startKey, limit, cb) {
+//
+//     //const options = {include_docs: true}
+//     let shouldWeDrop = false
+//
+//     // if (startKey) {
+//     //   options.stark_key = startKey
+//     //   options.limit = limit ? Number(limit) + 1 : 25
+//     shouldWeDrop = true
+//     // } else {
+//     //   options.limit = limit ? limit : 25
+//     // }
+//
+//     db.query("pharmacies", pageOptions(startKey, limit),
+//         function(err, list) {
+//             if (err) return cb(err)
+//
+//             var mappedQueryResults = shouldWeDrop ? compose(
+//               drop(1),
+//               map(returnDoc),
+//               map(addSortToken)
+//             )(list.rows) : compose(
+//               map(returnDoc),
+//               map(addSortToken)
+//             )(list.rows)
+//
+//             cb(null, mappedQueryResults)
+//         })
+// }
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
-<<<<<<< HEAD
+
   var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
 
   newId = newId.replace(" ", "_")
@@ -276,7 +327,7 @@ const dal = {
     addPharmacy: addPharmacy,
     updatePharmacy: updatePharmacy,
     getPharmacy: getPharmacy,
-    listPharmacies: listPharmacies,
+    // listPharmacies: listPharmacies,
     deletePharmacy: deletePharmacy,
     listPharmaciesByChainName: listPharmaciesByChainName,
     listPharmaciesByStoreName: listPharmaciesByStoreName,

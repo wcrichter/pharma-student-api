@@ -139,11 +139,10 @@ app.get('/pharmacies/:id', function(req, res, next) {
 })
 
 app.get('/pharmacies', function(req, res, next) {
-
-  const limit = req.query.limit ? req.query.limit : 10
   const startKey = req.query.startkey ? req.query.startkey : undefined
+  const limit = req.query.limit ? req.query.limit : undefined
 
-  listPharmacies(startKey , limit, function(err, pharmacyList) {
+  listPharmacies(startKey, limit, function(err, pharmacyList) {
     if (err) return next(new HTTPError(err.status, err.message, err))
     res.status(200).send(pharmacyList)
   })
