@@ -36,21 +36,18 @@ function listMedsByLabel(startKey, limit, cb) {
   options.include_docs = true
 
   if (startKey) {
-    options.start_key = startKey
+    options.startkey = startKey
     options.limit = limit ? Number(limit) + 1 : 10
   }  else {
     options.limit = limit ? Number(limit) : 10
   }
 
+  const meds =  startKey ? compose (drop(1),map(x=>x.doc),map(addSortToken)):compose (map(x=>x.doc),map(addSortToken))
+
     db.query('medsByLabel', options, function(err, res) {
-        if (err) return cb(err)
-        const meds = compose (
-          drop(1),
-          map(x=>x.doc),
-          map(addSortToken)
-        )(res.rows)
-        cb(null, meds)
-    })
+      if (err) return cb(err)
+      cb(null,meds(res.rows))
+  })
 }
 
 // listMedsByIngredient() - sort by ingredient - call pouchdb's api:  db.query('medsByIngredient', {options}, cb)
