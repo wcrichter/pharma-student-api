@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
 const couch_base_uri = "http://127.0.0.1:3000/"
-const couch_dbname = "pharmacy-new" //remember pharmacy for me
+const couch_dbname = "pharmacy" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
@@ -13,6 +13,9 @@ const {
 } = require('ramda')
 
 
+/////////////////////
+//   medications
+/////////////////////
 
 function getMed(medId, cb) {
     db.get(medId, function(err, doc) {
@@ -21,10 +24,32 @@ function getMed(medId, cb) {
     })
 }
 
-function getPatient(patientId, cb) {
-    db.get(patientId, function(err, patient) {
+function addMed(med, cb) {
+    med.type = "medication"
+    let newId = "medication_" + med.label.toLowerCase()
+    med._id = prepID(newId)
+
+    db.put(med, function(err, res) {
         if (err) return cb(err)
-        cb(null, patient)
+        cb(null, res)
+    })
+}
+
+function updateMed(med, cb) {
+    db.put(med, function(err, doc) {
+        if (err) return cb(err)
+        cb(null, doc)
+    })
+}
+
+function deleteMed(id, cb) {
+    db.get(id, function(err, doc) {
+        if (err) return cb(err)
+
+        db.remove(doc, function(err, deletedMed) {
+            if (err) return cb(err)
+            cb(null, deletedMed)
+        })
     })
 }
 
@@ -74,10 +99,16 @@ function getUniqueForms(cb) {
     })
 }
 
-const returnDoc = row => row.doc
 
 
-/////////////// Pharmacy functions /////////////////////
+
+
+
+
+/////////////////////
+//    pharmacy
+/////////////////////
+
 function addPharmacy(doc, cb) {
     checkRequiredInputs(doc) ?
         db.put(preppedNewPharmacy(doc), function(err, addedPharmacy) {
@@ -92,10 +123,10 @@ function addPharmacy(doc, cb) {
         })
 }
 
-function updatePharmacy(pharmacy, callMeMaybe) {
+function updatePharmacy(pharmacy, cb) {
     db.put(pharmacy, function(err, doc) {
-        if (err) return callMeMaybe(err)
-        callMeMaybe(null, doc)
+        if (err) return cb(err)
+        cb(null, doc)
     })
 }
 
@@ -120,7 +151,6 @@ function listPharmaciesByStoreName(storeName, cb) {
   })
 }
 
-
 function deletePharmacy(id, cb) {
     db.get(id, function(err, doc) {
         if (err) return cb(err)
@@ -131,35 +161,88 @@ function deletePharmacy(id, cb) {
     })
 }
 
+
 var addSortToken = function(queryRow) {
     queryRow.doc.startKey = queryRow.key;
     return queryRow;
 }
 
+// DONE: Move from allDocs() to to a couchdb query/view
+// DONE: Add a sort token / start key
+// DONE: Use Ramda's compose() to addSortToken before returning an array of docs
+// DONE: Add a startKey (sortToken) and limit params to the dal function.
+// DONE: Build a flexible options object that includes the startkey, limit, and include_docs
+// DONE:  Add to the limit and alter the compose to ramda drop(1)
+
+function pageOptions(startKey, limit) {
+
+  const options = {include_docs: true}
+
+  if (startKey) {
+    options.stark_key = startKey
+    options.limit = limit ? Number(limit) + 1 : 25
+    // shouldWeDrop = true
+  } else {
+    options.limit = limit ? limit : 25
+  }
+
+  return options
+}
+
+function composer(startKey){
+
+  const composedOptions
+
+  if (startKey) {
+    compose(
+      drop(1),
+      map(returnDoc),
+      map(addSortToken)
+    )(list.rows)
+  } else {
+    compose(
+      map(returnDoc),
+      map(addSortToken)
+    )(list.rows)
+  }
+
+
+}
 
 function listPharmacies(startKey, limit, cb) {
-    let options = {}
-    if (startKey) {
-        options.startkey = startKey
-    }
-    options.limit = limit ? limit + 1 : 10
-    options.include_docs = true
 
-    db.query("pharmacies", options,
+    //const options = {include_docs: true}
+    let shouldWeDrop = false
+
+    // if (startKey) {
+    //   options.stark_key = startKey
+    //   options.limit = limit ? Number(limit) + 1 : 25
+    shouldWeDrop = true
+    // } else {
+    //   options.limit = limit ? limit : 25
+    // }
+
+    db.query("pharmacies", pageOptions(startKey, limit),
         function(err, list) {
             if (err) return cb(err)
-            const pagedDocs = compose(
-                drop(1),
-                map(x => x.doc),
-                map(addSortToken)
+
+            var mappedQueryResults = shouldWeDrop ? compose(
+              drop(1),
+              map(returnDoc),
+              map(addSortToken)
+            )(list.rows) : compose(
+              map(returnDoc),
+              map(addSortToken)
             )(list.rows)
-            cb(null, pagedDocs)
+
+            cb(null, mappedQueryResults)
         })
 }
 
+
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
-<<<<<<< HEAD
+
   var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
 
   newId = newId.replace(" ", "_")
@@ -181,26 +264,24 @@ function preppedNewPharmacy(doc) {
 // }
 
 
-// function getUniqueForms(cb6) {
-//     db.query('medsByForm', null, function(err, res) {
-//         if (err) return cb6(err)
-//         cb6(null, uniq(map(row => row.key, res.rows)))
-//     })
-// }
 
 
 
-////////PATIENTS////////
+
+/////////////////////
+//    patients
+/////////////////////
 
 function addPatient(patient, cb7) {
     patient.type = "patient"
-    patient._id = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
+    let newId = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
+    patient._id = prepID(newId)
+
     db.put(patient, function(err, res) {
         if (err) return cb7(err)
         cb7(null, res)
     })
 }
-
 
 function getPatients(cb8) {
     db.allDocs({
@@ -212,7 +293,6 @@ function getPatients(cb8) {
         cb8(null, (map(obj => omit("type", obj.doc), res.rows)))
     })
 }
-
 
 function listPatientsByLastName(lastName, cb9) {
     db.query('patientsByLastName', {
@@ -267,9 +347,37 @@ function getPatient(patientId, cb) {
 }
 
 
+
+
+
+
+
+
+///////////////////////
+// helper functions
+///////////////////////
+
+function prepID(id) {
+  return id.replace(/ /g, "_")
+}
+
+var addSortToken = function(queryRow) {
+    queryRow.doc.startKey = queryRow.key;
+    return queryRow;
+}
+
 function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
 }
+
+function preppedNewPharmacy(doc) {
+    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
+    doc._id = prepID(newID)
+    doc.type = "pharmacy"
+    return doc
+}
+
+const returnDoc = row => row.doc
 
 
 const dal = {
@@ -287,6 +395,9 @@ const dal = {
     listMedsByIngredient: listMedsByIngredient,
     listMedsByForm: listMedsByForm,
     getMed: getMed,
+    addMed: addMed,
+    updateMed: updateMed,
+    deleteMed: deleteMed,
     addPatient: addPatient,
     getPatients: getPatients,
     listPatientsByLastName: listPatientsByLastName,
