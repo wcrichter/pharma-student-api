@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
-const couch_base_uri = "http://127.0.0.1:5984/"
-const couch_dbname = "pharma-student" //remember pharmacy for me
+const couch_base_uri = "http://127.0.0.1:5984/" //3000 for most of us...otherwise 5984
+const couch_dbname = "pharma-student" //remember pharmacy for me pharma-student
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
@@ -55,13 +55,24 @@ function deleteMed(id, cb) {
 
 // listMedsByLabel() - alpha sort by label - call pouchdb's api: db.query('medsByLabel', {options}, cb)
 
-function listMedsByLabel(cb) {
-    db.query('medsByLabel', {
-        include_docs: true
-    }, function(err, res) {
-        if (err) return cb(err)
-        cb(null, map(returnDoc, res.rows))
-    })
+function listMedsByLabel(startKey, limit, cb) {
+
+  let options = {}
+  options.include_docs = true
+
+  if (startKey) {
+    options.startkey = startKey
+    options.limit = limit ? Number(limit) + 1 : 10
+  }  else {
+    options.limit = limit ? Number(limit) : 10
+  }
+
+  const meds =  startKey ? compose (drop(1),map(x=>x.doc),map(addSortToken)):compose (map(x=>x.doc),map(addSortToken))
+
+    db.query('medsByLabel', options, function(err, res) {
+      if (err) return cb(err)
+      cb(null,meds(res.rows))
+  })
 }
 
 // listMedsByIngredient() - sort by ingredient - call pouchdb's api:  db.query('medsByIngredient', {options}, cb)
@@ -219,52 +230,52 @@ function preppedNewPharmacy(doc) {
 //    patients
 /////////////////////
 
-function addPatient(patient, cb7) {
+function addPatient(patient, cb) {
     patient.type = "patient"
     let newId = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
     patient._id = prepID(newId)
 
     db.put(patient, function(err, res) {
         if (err) return cb7(err)
-        cb7(null, res)
+        cb(null, res)
     })
 }
 
-function getPatients(cb8) {
+function getPatients(cb) {
     db.allDocs({
         include_docs: true,
         start_key: "patient_",
         end_key: "patient_\uffff"
     }, function(err, res) {
         if (err) return cb8(err)
-        cb8(null, (map(obj => omit("type", obj.doc), res.rows)))
+        cb(null, (map(obj => omit("type", obj.doc), res.rows)))
     })
 }
 
-function listPatientsByLastName(lastName, cb9) {
+function listPatientsByLastName(lastName, cb) {
     db.query('patientsByLastName', {
         include_docs: true,
         keys: [lastName]
     }, function(err, res) {
         if (err) return cb9(err)
-        cb9(null, map(returnDoc, res.rows))
+        cb(null, map(returnDoc, res.rows))
     })
 }
 
-function listPatientsByCondition(condition, cb14) {
+function listPatientsByCondition(condition, cb) {
     db.query('patientsByCondition', {
         include_docs: true,
         keys: [condition]
     }, function(err, res) {
         if (err) return cb14(err)
-        cb14(null, map(returnDoc, res.rows))
+        cb(null, map(returnDoc, res.rows))
     })
 }
 
-function getUniqueConditions(cb12) {
+function getUniqueConditions(cb) {
     db.query('patientsByCondition', null, function(err, res) {
         if (err) return cb12(err)
-        cb12(null, uniq(map(row => row.key, res.rows)))
+        cb(null, uniq(map(row => row.key, res.rows)))
     })
 }
 

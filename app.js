@@ -1,35 +1,14 @@
 const express = require('express')
 const app = express()
-const {
-    getUniqueForms,
-    listMedsByLabel,
-    getUniqueIngredients,
-    listMedsByIngredient,
-    listMedsByForm,
-    getMed,
-    updatePharmacy,
-    addPharmacy,
-    getPharmacy,
-    listPharmacies,
-    listPharmaciesByChainName,
-    listPharmaciesByStoreName,
-    deletePharmacy,
-    addPatient,
-    getPatients,
-    listPatientsByLastName,
-    getUniqueConditions,
-    listPatientsByCondition,
-    updatePatient,
-    deletePatient,
-    getPatient,
-    addMed,
-    updateMed,
-    deleteMed
-} = require('./dal.js')
-const {
-    split
-} = require('ramda')
+
+const { getUniqueForms, listMedsByLabel, getUniqueIngredients, listMedsByIngredient,
+        listMedsByForm, getMed, updatePharmacy, addPharmacy, getPharmacy, listPharmacies, deletePharmacy,
+        addPatient, getPatients, listPatientsByLastName, getUniqueConditions, listPatientsByCondition,
+        updatePatient, deletePatient, getPatient, addMed, updateMed, deleteMed} = require('./dal.js')
+const { split } = require('ramda')
+
 const bodyParser = require('body-parser')
+
 const HTTPError = require('node-http-error')
 const port = process.env.PORT || 8082
 const cors = require('cors')
@@ -57,10 +36,13 @@ app.get('/medications', function(req, res, next) {
             res.status(200).send(meds)
         })
     } else if (!req.query.filter) {
-        listMedsByLabel(function(err, meds) {
+        const startkey = req.query.startkey ? req.query.startkey : undefined
+        const limit = req.query.limit ? req.query.limit : undefined
+        listMedsByLabel(startkey, limit, function(err, meds) {
+            console.log(startkey + " " + limit) //working...
             if (err) return next(new HTTPError(err.status, err.message, err))
             res.status(200).send(meds)
-        })
+          })
     } else {
         res.status(200).send([])
     }
@@ -94,7 +76,6 @@ app.delete('/medications/:id', function(req, res, next) {
 
     })
 })
-
 
 
 app.get('/medications/ingredients', function(req, res, next) {
