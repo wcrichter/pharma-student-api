@@ -203,6 +203,15 @@ function listPharmacies(startKey, limit, cb) {
 }
 
 
+/////////////////// helper functions //////////////////////////
+function preppedNewPharmacy(doc) {
+  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
+  newId = newId.replace(" ", "_")
+    doc._id = newId
+    doc.type = "pharmacy"
+    return doc
+}
+
 
 
 
