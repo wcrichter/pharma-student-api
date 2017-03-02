@@ -143,70 +143,70 @@ var addSortToken = function(queryRow) {
 // DONE: Build a flexible options object that includes the startkey, limit, and include_docs
 // DONE:  Add to the limit and alter the compose to ramda drop(1)
 
-// function pageOptions(startKey, limit) {
-//
-//   const options = {include_docs: true}
-//
-//   if (startKey) {
-//     options.stark_key = startKey
-//     options.limit = limit ? Number(limit) + 1 : 25
-//     // shouldWeDrop = true
-//   } else {
-//     options.limit = limit ? limit : 25
-//   }
-//
-//   return options
-// }
+function pageOptions(startKey, limit) {
 
-// function composer(startKey){
-//
-//   const composedOptions
-//
-//   if (startKey) {
-//     compose(
-//       drop(1),
-//       map(returnDoc),
-//       map(addSortToken)
-//     )(list.rows)
-//   } else {
-//     compose(
-//       map(returnDoc),
-//       map(addSortToken)
-//     )(list.rows)
-//   }
-//
-//
-// }
+  const options = {include_docs: true}
 
-// function listPharmacies(startKey, limit, cb) {
-//
-//     //const options = {include_docs: true}
-//     let shouldWeDrop = false
-//
-//     // if (startKey) {
-//     //   options.stark_key = startKey
-//     //   options.limit = limit ? Number(limit) + 1 : 25
-//     shouldWeDrop = true
-//     // } else {
-//     //   options.limit = limit ? limit : 25
-//     // }
-//
-//     db.query("pharmacies", pageOptions(startKey, limit),
-//         function(err, list) {
-//             if (err) return cb(err)
-//
-//             var mappedQueryResults = shouldWeDrop ? compose(
-//               drop(1),
-//               map(returnDoc),
-//               map(addSortToken)
-//             )(list.rows) : compose(
-//               map(returnDoc),
-//               map(addSortToken)
-//             )(list.rows)
-//
-//             cb(null, mappedQueryResults)
-//         })
-// }
+  if (startKey) {
+    options.stark_key = startKey
+    options.limit = limit ? Number(limit) + 1 : 25
+    // shouldWeDrop = true
+  } else {
+    options.limit = limit ? limit : 25
+  }
+
+  return options
+}
+
+function composer(startKey){
+
+  const composedOptions
+
+  if (startKey) {
+    compose(
+      drop(1),
+      map(returnDoc),
+      map(addSortToken)
+    )(list.rows)
+  } else {
+    compose(
+      map(returnDoc),
+      map(addSortToken)
+    )(list.rows)
+  }
+
+
+}
+
+function listPharmacies(startKey, limit, cb) {
+
+    //const options = {include_docs: true}
+    let shouldWeDrop = false
+
+    // if (startKey) {
+    //   options.stark_key = startKey
+    //   options.limit = limit ? Number(limit) + 1 : 25
+    shouldWeDrop = true
+    // } else {
+    //   options.limit = limit ? limit : 25
+    // }
+
+    db.query("pharmacies", pageOptions(startKey, limit),
+        function(err, list) {
+            if (err) return cb(err)
+
+            var mappedQueryResults = shouldWeDrop ? compose(
+              drop(1),
+              map(returnDoc),
+              map(addSortToken)
+            )(list.rows) : compose(
+              map(returnDoc),
+              map(addSortToken)
+            )(list.rows)
+
+            cb(null, mappedQueryResults)
+        })
+}
 
 /////////////////// helper functions //////////////////////////
 function preppedNewPharmacy(doc) {
