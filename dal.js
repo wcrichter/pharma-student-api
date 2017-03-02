@@ -1,6 +1,6 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
-const couch_base_uri = "http://127.0.0.1:5984/"
+const couch_base_uri = "http://127.0.0.1:3000/"
 const couch_dbname = "pharma-student" //remember pharmacy for me
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
@@ -178,7 +178,7 @@ function listPharmacies(startKey, limit, cb) {
     let shouldWeDrop = false
 
     if (startKey) {
-      options.stark_key = startKey
+      options.start_key = startKey
       options.limit = limit ? Number(limit) + 1 : 25
       shouldWeDrop = true
     } else {
