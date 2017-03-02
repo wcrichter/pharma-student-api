@@ -253,21 +253,6 @@ function preppedNewPharmacy(doc) {
 
 
 
-// function listMedsByForm(form, cb5) {
-//     db.query('medsByForm', {
-//         include_docs: true,
-//         keys: [form]
-//     }, function(err, res) {
-//         if (err) return cb5(err)
-//         cb5(null, map(returnDoc, res.rows))
-//     })
-// }
-
-
-
-
-
-
 /////////////////////
 //    patients
 /////////////////////
