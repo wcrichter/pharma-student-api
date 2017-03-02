@@ -162,10 +162,7 @@ function deletePharmacy(id, cb) {
 }
 
 
-var addSortToken = function(queryRow) {
-    queryRow.doc.startKey = queryRow.key;
-    return queryRow;
-}
+
 
 // DONE: Move from allDocs() to to a couchdb query/view
 // DONE: Add a sort token / start key
@@ -174,55 +171,21 @@ var addSortToken = function(queryRow) {
 // DONE: Build a flexible options object that includes the startkey, limit, and include_docs
 // DONE:  Add to the limit and alter the compose to ramda drop(1)
 
-function pageOptions(startKey, limit) {
-
-  const options = {include_docs: true}
-
-  if (startKey) {
-    options.stark_key = startKey
-    options.limit = limit ? Number(limit) + 1 : 25
-    // shouldWeDrop = true
-  } else {
-    options.limit = limit ? limit : 25
-  }
-
-  return options
-}
-
-function composer(startKey){
-
-  const composedOptions
-
-  if (startKey) {
-    compose(
-      drop(1),
-      map(returnDoc),
-      map(addSortToken)
-    )(list.rows)
-  } else {
-    compose(
-      map(returnDoc),
-      map(addSortToken)
-    )(list.rows)
-  }
-
-
-}
 
 function listPharmacies(startKey, limit, cb) {
 
-    //const options = {include_docs: true}
+    const options = {include_docs: true}
     let shouldWeDrop = false
 
-    // if (startKey) {
-    //   options.stark_key = startKey
-    //   options.limit = limit ? Number(limit) + 1 : 25
-    shouldWeDrop = true
-    // } else {
-    //   options.limit = limit ? limit : 25
-    // }
+    if (startKey) {
+      options.stark_key = startKey
+      options.limit = limit ? Number(limit) + 1 : 25
+      shouldWeDrop = true
+    } else {
+      options.limit = limit ? limit : 25
+    }
 
-    db.query("pharmacies", pageOptions(startKey, limit),
+    db.query("pharmacies", options,
         function(err, list) {
             if (err) return cb(err)
 
@@ -238,31 +201,6 @@ function listPharmacies(startKey, limit, cb) {
             cb(null, mappedQueryResults)
         })
 }
-
-
-/////////////////// helper functions //////////////////////////
-function preppedNewPharmacy(doc) {
-
-  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
-
-  newId = newId.replace(" ", "_")
-    doc._id = newId
-    doc.type = "pharmacy"
-    return doc
-}
-
-
-
-// function listMedsByForm(form, cb5) {
-//     db.query('medsByForm', {
-//         include_docs: true,
-//         keys: [form]
-//     }, function(err, res) {
-//         if (err) return cb5(err)
-//         cb5(null, map(returnDoc, res.rows))
-//     })
-// }
-
 
 
 
@@ -357,6 +295,14 @@ function getPatient(patientId, cb) {
 // helper functions
 ///////////////////////
 
+function preppedNewPharmacy(doc) {
+  var newId = "pharmacy_" + doc.storeChainName.toLowerCase() + "_" + doc.storeName.toLowerCase() + "_" + doc.storeNumber
+  newId = newId.replace(" ", "_")
+    doc._id = newId
+    doc.type = "pharmacy"
+    return doc
+}
+
 function prepID(id) {
   return id.replace(/ /g, "_")
 }
@@ -368,13 +314,6 @@ var addSortToken = function(queryRow) {
 
 function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
-}
-
-function preppedNewPharmacy(doc) {
-    var newID = "pharmacy_" + doc.storeChainName + "_" + doc.storeName + "_" + doc.storeNumber
-    doc._id = prepID(newID)
-    doc.type = "pharmacy"
-    return doc
 }
 
 const returnDoc = row => row.doc
