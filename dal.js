@@ -1,7 +1,7 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
-const couch_base_uri = "http://127.0.0.1:5984/" //3000 for most of us...otherwise 5984
-const couch_dbname = "pharma-student" //remember pharmacy for me pharma-student
+const couch_base_uri = "http://127.0.0.1:3000/" //3000 for most of us...otherwise 5984
+const couch_dbname = "pharmacy" //remember pharmacy for me pharma-student
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {
     map,
@@ -29,9 +29,16 @@ function addMed(med, cb) {
     let newId = "medication_" + med.label.toLowerCase()
     med._id = prepID(newId)
 
-    db.put(med, function(err, res) {
+  checkRequiredMedInputs(med)
+    ?  db.put(med, function(err, res) {
         if (err) return cb(err)
         cb(null, res)
+    }) : cb({
+            error: "bad_request",
+            reason: "bad_request",
+            name: "bad_request",
+            status: "400",
+            message: "need all required inputs..."
     })
 }
 
@@ -235,9 +242,16 @@ function addPatient(patient, cb) {
     let newId = `patient_${patient.lastName.toLowerCase()}_${patient.firstName.toLowerCase()}_${patient.last4SSN}_${patient.patientNumber}`
     patient._id = prepID(newId)
 
-    db.put(patient, function(err, res) {
-        if (err) return cb7(err)
+  checkRequiredPatientInputs(patient)
+    ?  db.put(patient, function(err, res) {
+        if (err) return cb(err)
         cb(null, res)
+    })  : cb({
+            error: "bad_request",
+            reason: "bad_request",
+            name: "bad_request",
+            status: "400",
+            message: "need all required inputs..."
     })
 }
 
@@ -247,7 +261,7 @@ function getPatients(cb) {
         start_key: "patient_",
         end_key: "patient_\uffff"
     }, function(err, res) {
-        if (err) return cb8(err)
+        if (err) return cb(err)
         cb(null, (map(obj => omit("type", obj.doc), res.rows)))
     })
 }
@@ -257,7 +271,7 @@ function listPatientsByLastName(lastName, cb) {
         include_docs: true,
         keys: [lastName]
     }, function(err, res) {
-        if (err) return cb9(err)
+        if (err) return cb(err)
         cb(null, map(returnDoc, res.rows))
     })
 }
@@ -267,14 +281,14 @@ function listPatientsByCondition(condition, cb) {
         include_docs: true,
         keys: [condition]
     }, function(err, res) {
-        if (err) return cb14(err)
+        if (err) return cb(err)
         cb(null, map(returnDoc, res.rows))
     })
 }
 
 function getUniqueConditions(cb) {
     db.query('patientsByCondition', null, function(err, res) {
-        if (err) return cb12(err)
+        if (err) return cb(err)
         cb(null, uniq(map(row => row.key, res.rows)))
     })
 }
@@ -334,6 +348,14 @@ var addSortToken = function(queryRow) {
 
 function checkRequiredInputs(doc) {
     return prop('storeNumber', doc) && prop('storeChainName', doc) && prop('storeName', doc) && prop('streetAddress', doc) && prop('phone', doc)
+}
+
+function checkRequiredPatientInputs(doc) {
+  return prop('firstName', doc) && prop('lastName', doc) && prop('birthdate', doc) && prop('gender', doc) && prop('ethnicity', doc) && prop('last4SSN', doc)
+}
+
+function checkRequiredMedInputs(doc) {
+  return prop('label', doc) && prop('type', doc) && prop('amount', doc) && prop('unit', doc) && prop('form', doc)
 }
 
 const returnDoc = row => row.doc
