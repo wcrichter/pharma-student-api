@@ -1,6 +1,6 @@
 const PouchDB = require('pouchdb-http')
 PouchDB.plugin(require('pouchdb-mapreduce'))
-const couch_base_uri = "http://127.0.0.1:3000/" //set back to 5984 before commit
+const couch_base_uri = "http://127.0.0.1:5984/" //set back to 5984 before commit
 const couch_dbname = "pharma-student" //set back to pharma-student before commit
 const db = new PouchDB(couch_base_uri + couch_dbname)
 const {

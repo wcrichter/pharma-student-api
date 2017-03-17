@@ -110,3 +110,26 @@ VALUES
 , (5, 'esomeprazole')
 , (6, 'acetaminophen')
 , (6, 'hydrocodone');
+
+CREATE VIEW medWithIngredients AS
+SELECT m.ID AS ID
+,m.name AS name
+,m.label AS label
+,m.amount AS amount
+,m.unit AS unit
+,m.form AS form
+,mi.ingredient AS ingredient
+FROM med m
+LEFT JOIN medIngredient mi on m.ID = mi.medID;
+
+CREATE VIEW patientWithConditions AS
+SELECT p.ID AS ID
+,p.patientNumber AS patientNumber
+,p.firstName AS firstName
+,p.lastName AS lastName
+,p.birthDate AS birthDate
+,p.gender AS gender
+,p.ethnicity AS ethnicity
+,p.last4SSN AS last4SSN
+FROM patient p
+LEFT JOIN patientCondition pc ON p.ID = pc.patientID;
